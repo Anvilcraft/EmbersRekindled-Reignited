@@ -57,7 +57,7 @@ public class AtmosphericBellowsUpgrade extends DefaultUpgradeProvider {
 	}
 
 	private boolean shouldSuperheatBlazeBurner(BlockEntity tile) {
-		return isCreateBlazeBurner(tile) && this.tile.getLevel() != null && this.tile.getLevel().hasNeighborSignal(this.tile.getBlockPos());
+		return isCreateBlazeBurner(tile);
 	}
 
 	@Override
