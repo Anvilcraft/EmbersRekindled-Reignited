@@ -1,0 +1,27 @@
+package com.rekindled.embers.compat.create;
+
+import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+
+final class CreateCompatClient {
+
+	private CreateCompatClient() {
+	}
+
+	static void init(IEventBus modEventBus) {
+		modEventBus.addListener(CreateCompatClient::clientSetup);
+		modEventBus.addListener(CreateCompatClient::registerRenderers);
+	}
+
+	private static void clientSetup(FMLClientSetupEvent event) {
+		event.enqueueWork(() -> SimpleBlockEntityVisualizer.builder(CreateCompat.EMBER_KINETIC_GENERATOR_ENTITY.get())
+				.factory(EmberKineticGeneratorVisual::new)
+				.apply());
+	}
+
+	private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+		event.registerBlockEntityRenderer(CreateCompat.EMBER_KINETIC_GENERATOR_ENTITY.get(), EmberKineticGeneratorRenderer::new);
+	}
+}

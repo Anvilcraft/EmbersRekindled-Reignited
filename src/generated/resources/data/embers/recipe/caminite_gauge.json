@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "embers:caminite_bricks"
+    },
+    "G": {
+      "tag": "c:glass/silica"
+    }
+  },
+  "pattern": [
+    "BBB",
+    "G G",
+    "BBB"
+  ],
+  "result": {
+    "id": "embers:caminite_gauge"
+  },
+  "show_notification": true
+}

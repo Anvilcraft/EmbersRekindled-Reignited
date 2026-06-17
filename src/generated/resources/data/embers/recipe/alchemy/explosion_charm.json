@@ -1,0 +1,43 @@
+{
+  "type": "embers:alchemy",
+  "aspects": [
+    {
+      "tag": "embers:aspectus/dawnstone"
+    },
+    {
+      "tag": "embers:aspectus/silver"
+    },
+    {
+      "tag": "embers:aspectus/copper"
+    },
+    {
+      "tag": "embers:aspectus/iron"
+    }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "curios"
+    }
+  ],
+  "inputs": [
+    {
+      "item": "embers:archaic_brick"
+    },
+    {
+      "item": "embers:archaic_brick"
+    },
+    {
+      "tag": "c:leather"
+    },
+    {
+      "item": "embers:archaic_brick"
+    }
+  ],
+  "output": {
+    "id": "embers:explosion_charm"
+  },
+  "tablet": {
+    "item": "embers:ember_crystal_cluster"
+  }
+}

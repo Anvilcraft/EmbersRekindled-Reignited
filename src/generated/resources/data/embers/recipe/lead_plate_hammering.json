@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "c:ingots/lead"
+    },
+    {
+      "tag": "c:ingots/lead"
+    },
+    {
+      "tag": "embers:tinker_hammer"
+    }
+  ],
+  "result": {
+    "id": "embers:lead_plate"
+  }
+}

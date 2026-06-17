@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "curios"
+    }
+  ],
+  "key": {
+    "C": {
+      "tag": "c:plates/dawnstone"
+    },
+    "G": {
+      "tag": "c:glass/silica"
+    },
+    "I": {
+      "tag": "c:ingots/lead"
+    },
+    "S": {
+      "item": "embers:ember_crystal_cluster"
+    }
+  },
+  "pattern": [
+    " CI",
+    "GSG",
+    " G "
+  ],
+  "result": {
+    "id": "embers:ember_bulb"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,31 @@
+{
+  "type": "embers:alchemy",
+  "aspects": [
+    {
+      "tag": "embers:aspectus/copper"
+    },
+    {
+      "tag": "embers:aspectus/dawnstone"
+    }
+  ],
+  "inputs": [
+    {
+      "tag": "c:gunpowder"
+    },
+    {
+      "tag": "c:gunpowder"
+    },
+    {
+      "item": "embers:ember_shard"
+    },
+    {
+      "item": "embers:ember_shard"
+    }
+  ],
+  "output": {
+    "id": "embers:glimmer_crystal"
+  },
+  "tablet": {
+    "tag": "c:gems/quartz"
+  }
+}

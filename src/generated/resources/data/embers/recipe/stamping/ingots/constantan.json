@@ -1,0 +1,22 @@
+{
+  "type": "embers:stamping",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/constantan"
+      }
+    }
+  ],
+  "fluid": {
+    "amount": 90,
+    "tag": "c:molten_constantan"
+  },
+  "output": {
+    "tag": "c:ingots/constantan"
+  },
+  "stamp": {
+    "item": "embers:ingot_stamp"
+  }
+}

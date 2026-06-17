@@ -1,0 +1,49 @@
+{
+  "type": "embers:alchemy",
+  "aspects": [
+    {
+      "tag": "embers:aspectus/iron"
+    },
+    {
+      "tag": "embers:aspectus/lead"
+    }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "c:ingots/zinc"
+          }
+        },
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "c:nuggets/zinc"
+          }
+        }
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "tag": "c:ingots/zinc"
+    },
+    {
+      "tag": "c:ingots/zinc"
+    },
+    {
+      "tag": "c:ingots/zinc"
+    }
+  ],
+  "output": {
+    "id": "embers:zinc_crystal_seed"
+  },
+  "tablet": {
+    "tag": "embers:crystal_seeds"
+  }
+}

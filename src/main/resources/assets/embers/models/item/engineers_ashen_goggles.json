@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "embers:item/engineers_ashen_goggles"
+  }
+}

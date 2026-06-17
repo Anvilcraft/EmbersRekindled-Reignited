@@ -1,0 +1,22 @@
+{
+  "type": "embers:stamping",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gears/platinum"
+      }
+    }
+  ],
+  "fluid": {
+    "amount": 180,
+    "tag": "c:molten_platinum"
+  },
+  "output": {
+    "tag": "c:gears/platinum"
+  },
+  "stamp": {
+    "item": "embers:gear_stamp"
+  }
+}

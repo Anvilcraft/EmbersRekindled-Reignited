@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "M": {
+      "tag": "c:ingots/dawnstone"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    "M",
+    "S",
+    "S"
+  ],
+  "result": {
+    "id": "embers:dawnstone_shovel"
+  },
+  "show_notification": true
+}

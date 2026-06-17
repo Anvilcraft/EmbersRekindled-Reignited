@@ -1,0 +1,34 @@
+{
+  "type": "embers:alchemy",
+  "aspects": [
+    {
+      "tag": "embers:aspectus/iron"
+    },
+    {
+      "tag": "embers:aspectus/lead"
+    },
+    {
+      "tag": "embers:aspectus/dawnstone"
+    }
+  ],
+  "inputs": [
+    {
+      "tag": "c:dusts/ash"
+    },
+    {
+      "tag": "c:dusts/ash"
+    },
+    {
+      "tag": "c:string"
+    },
+    {
+      "tag": "c:string"
+    }
+  ],
+  "output": {
+    "id": "embers:ashen_fabric"
+  },
+  "tablet": {
+    "tag": "minecraft:wool"
+  }
+}

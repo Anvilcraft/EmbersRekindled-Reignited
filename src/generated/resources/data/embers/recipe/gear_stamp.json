@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gears"
+      }
+    }
+  ],
+  "cookingtime": 200,
+  "experience": 0.1,
+  "ingredient": {
+    "item": "embers:raw_gear_stamp"
+  },
+  "result": {
+    "id": "embers:gear_stamp"
+  }
+}

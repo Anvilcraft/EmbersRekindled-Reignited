@@ -1,0 +1,19 @@
+{
+  "type": "embers:melting",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gears/silver"
+      }
+    }
+  ],
+  "input": {
+    "tag": "c:gears/silver"
+  },
+  "output": {
+    "amount": 180,
+    "tag": "c:molten_silver"
+  }
+}

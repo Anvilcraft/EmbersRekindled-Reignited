@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gears"
+      }
+    }
+  ],
+  "key": {
+    "X": {
+      "item": "embers:caminite_blend"
+    }
+  },
+  "pattern": [
+    "X X",
+    " X ",
+    "X X"
+  ],
+  "result": {
+    "id": "embers:raw_gear_stamp"
+  },
+  "show_notification": true
+}

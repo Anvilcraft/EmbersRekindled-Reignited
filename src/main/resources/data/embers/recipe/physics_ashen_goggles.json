@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "createthrusters"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "createthrusters:physics_goggles"
+    },
+    {
+      "item": "embers:ashen_goggles"
+    }
+  ],
+  "result": {
+    "id": "embers:physics_ashen_goggles"
+  }
+}

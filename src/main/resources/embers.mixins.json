@@ -1,0 +1,17 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "com.rekindled.embers.mixin",
+  "plugin": "com.rekindled.embers.mixin.EmbersMixinConfigPlugin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CreateBlazeBurnerBlockEntityMixin",
+    "CreateBlazeBurnerBlockInteractionMixin"
+  ],
+  "client": [
+    "CTPhysicsGogglesClientUtilMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

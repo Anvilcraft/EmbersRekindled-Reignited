@@ -1,0 +1,28 @@
+{
+  "type": "embers:alchemy",
+  "aspects": [
+    {
+      "tag": "embers:aspectus/iron"
+    },
+    {
+      "tag": "embers:aspectus/lead"
+    }
+  ],
+  "inputs": [
+    {
+      "tag": "c:ingots/lead"
+    },
+    {
+      "tag": "c:ingots/lead"
+    },
+    {
+      "tag": "c:ingots/lead"
+    }
+  ],
+  "output": {
+    "id": "embers:lead_crystal_seed"
+  },
+  "tablet": {
+    "tag": "embers:crystal_seeds"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "embers:mixing",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/electrum"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 2,
+      "tag": "c:molten_silver"
+    },
+    {
+      "amount": 2,
+      "tag": "c:molten_gold"
+    }
+  ],
+  "output": {
+    "amount": 4,
+    "tag": "c:molten_electrum"
+  }
+}

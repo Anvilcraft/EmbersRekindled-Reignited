@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "embers:ashen_tile"
+  },
+  "result": {
+    "id": "embers:ashen_tile_slab"
+  }
+}

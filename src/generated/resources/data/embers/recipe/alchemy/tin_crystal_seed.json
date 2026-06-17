@@ -1,0 +1,49 @@
+{
+  "type": "embers:alchemy",
+  "aspects": [
+    {
+      "tag": "embers:aspectus/iron"
+    },
+    {
+      "tag": "embers:aspectus/silver"
+    }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "c:ingots/tin"
+          }
+        },
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "c:nuggets/tin"
+          }
+        }
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "tag": "c:ingots/tin"
+    },
+    {
+      "tag": "c:ingots/tin"
+    },
+    {
+      "tag": "c:ingots/tin"
+    }
+  ],
+  "output": {
+    "id": "embers:tin_crystal_seed"
+  },
+  "tablet": {
+    "tag": "embers:crystal_seeds"
+  }
+}

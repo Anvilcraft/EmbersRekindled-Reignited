@@ -1,0 +1,13 @@
+{
+  "values": [
+    "embers:ashen_goggles",
+    {
+      "id": "embers:engineers_ashen_goggles",
+      "required": false
+    },
+    {
+      "id": "embers:physics_ashen_goggles",
+      "required": false
+    }
+  ]
+}

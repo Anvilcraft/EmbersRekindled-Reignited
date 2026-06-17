@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "ingredient": {
+    "item": "embers:raw_nugget_stamp"
+  },
+  "result": {
+    "id": "embers:nugget_stamp"
+  }
+}

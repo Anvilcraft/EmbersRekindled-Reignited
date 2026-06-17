@@ -1,0 +1,129 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.141'
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = 'embers-reignited'
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
+sourceSets.main.java {
+    exclude 'com/rekindled/embers/datagen/EmbersRecipes.java'
+    exclude 'com/rekindled/embers/datagen/EmbersBiomeModifiers.java'
+    exclude 'com/rekindled/embers/datagen/EmbersBlockLootTables.java'
+    exclude 'com/rekindled/embers/datagen/EmbersEntityLootTables.java'
+    exclude 'com/rekindled/embers/datagen/EmbersItemModels.java'
+    exclude 'com/rekindled/embers/datagen/EmbersLootModifiers.java'
+    exclude 'com/rekindled/embers/datagen/EmbersLootTables.java'
+    exclude 'com/rekindled/embers/datagen/EmbersStructures.java'
+    exclude 'com/rekindled/embers/recipe/*RecipeBuilder.java'
+    exclude 'com/rekindled/embers/recipe/GenericRecipeBuilder.java'
+    exclude 'com/rekindled/embers/util/ConsumerWrapperBuilder.java'
+    exclude 'com/rekindled/embers/util/AugmentPredicate.java'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'Create Maven'
+        url = 'https://maven.createmod.net/'
+    }
+    maven {
+        name = 'BlameJared'
+        url = 'https://maven.blamejared.com/'
+    }
+    maven {
+        name = 'Curios'
+        url = 'https://maven.theillusivec4.top/'
+    }
+}
+
+def referenceLibs = fileTree('E:/create-thrusters/libs') {
+    include '*.jar'
+}
+
+neoForge {
+    version = neoforge_version
+
+    parchment {
+        minecraftVersion = minecraft_version
+        mappingsVersion = '2024.11.17'
+    }
+
+    accessTransformers.from(file('src/main/resources/META-INF/accesstransformer.cfg'))
+
+    runs {
+        client {
+            client()
+            gameDirectory = file('run/client')
+        }
+        server {
+            server()
+            gameDirectory = file('run/server')
+            programArgument '--nogui'
+        }
+        data {
+            data()
+            gameDirectory = file('run/data')
+            programArguments.addAll '--mod', mod_id, '--all', '--output',
+                    file('src/generated/resources/').absolutePath, '--existing',
+                    file('src/main/resources/').absolutePath
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+dependencies {
+    compileOnly referenceLibs
+    compileOnly "dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:1.0.6"
+    compileOnly "mezz.jei:jei-1.21.1-neoforge-api:${jei_version}"
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+}
+
+def replaceProperties = [
+        minecraft_version: minecraft_version,
+        neoforge_version: neoforge_version,
+        mod_id: mod_id,
+        mod_name: mod_name,
+        mod_license: mod_license,
+        mod_version: mod_version,
+        mod_authors: mod_authors,
+        mod_description: mod_description
+]
+
+processResources {
+    inputs.properties replaceProperties
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs.addAll(['-Xmaxerrs', '10000'])
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            artifact jar
+        }
+    }
+}

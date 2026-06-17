@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "create:goggles"
+    },
+    {
+      "item": "embers:ashen_goggles"
+    }
+  ],
+  "result": {
+    "id": "embers:engineers_ashen_goggles"
+  }
+}

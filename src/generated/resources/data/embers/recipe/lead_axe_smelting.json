@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "ingredient": {
+    "item": "embers:lead_axe"
+  },
+  "result": {
+    "id": "embers:lead_nugget"
+  }
+}

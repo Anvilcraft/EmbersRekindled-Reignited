@@ -1,0 +1,28 @@
+{
+  "type": "embers:alchemy",
+  "aspects": [
+    {
+      "tag": "embers:aspectus/dawnstone"
+    },
+    {
+      "tag": "embers:aspectus/silver"
+    }
+  ],
+  "inputs": [
+    {
+      "item": "embers:fluid_pipe"
+    },
+    {
+      "tag": "c:glass/silica"
+    },
+    {
+      "item": "embers:fluid_pipe"
+    }
+  ],
+  "output": {
+    "id": "embers:catalytic_plug"
+  },
+  "tablet": {
+    "tag": "c:ingots/silver"
+  }
+}

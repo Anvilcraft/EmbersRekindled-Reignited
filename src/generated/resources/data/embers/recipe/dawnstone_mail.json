@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "curios"
+    }
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/dawnstone"
+    }
+  },
+  "pattern": [
+    "P P",
+    "PPP",
+    "PPP"
+  ],
+  "result": {
+    "id": "embers:dawnstone_mail"
+  },
+  "show_notification": true
+}

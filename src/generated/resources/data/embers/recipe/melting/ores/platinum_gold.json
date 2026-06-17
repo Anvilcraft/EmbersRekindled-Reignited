@@ -1,0 +1,28 @@
+{
+  "type": "embers:melting",
+  "bonus": {
+    "amount": 20,
+    "tag": "c:molten_gold"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "c:ores/platinum"
+          }
+        }
+      ]
+    }
+  ],
+  "input": {
+    "tag": "c:ores/platinum"
+  },
+  "output": {
+    "amount": 240,
+    "tag": "c:molten_platinum"
+  }
+}

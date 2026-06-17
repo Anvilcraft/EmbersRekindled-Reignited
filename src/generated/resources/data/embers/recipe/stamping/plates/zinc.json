@@ -1,0 +1,22 @@
+{
+  "type": "embers:stamping",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/zinc"
+      }
+    }
+  ],
+  "fluid": {
+    "amount": 90,
+    "tag": "c:molten_zinc"
+  },
+  "output": {
+    "tag": "c:plates/zinc"
+  },
+  "stamp": {
+    "item": "embers:plate_stamp"
+  }
+}
