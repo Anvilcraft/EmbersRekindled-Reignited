@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 public final class CreateBlazeBurnerHelper {
 	private static final int MAX_GROUP_RADIUS = 2;
 	private static final int MAX_GROUP_SIZE = 9;
