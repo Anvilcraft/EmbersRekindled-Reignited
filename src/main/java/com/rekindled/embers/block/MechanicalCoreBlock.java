@@ -1,5 +1,8 @@
 package com.rekindled.embers.block;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.rekindled.embers.RegistryManager;
 import com.rekindled.embers.util.Misc;
 
@@ -25,6 +28,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class MechanicalCoreBlock extends EmbersEntityBlock implements SimpleWaterloggedBlock {
+
+	private static final ThreadLocal<Set<BlockPos>> ACTIVE_OUTPUT_UPDATES = ThreadLocal.withInitial(HashSet::new);
 
 	public static final VoxelShape UP_AABB = Shapes.or(Block.box(0,12,12,16,16,16),Block.box(0,12,0,16,16,4),Block.box(12,12,4,16,16,12),Block.box(0,12,4,4,16,12),Block.box(0,0,0,4,12,4),Block.box(0,0,12,4,12,16),Block.box(12,0,12,16,12,16),Block.box(12,0,0,16,12,4),Block.box(4,4,2,12,12,14),Block.box(3,2,3,13,14,13),Block.box(2,4,4,14,12,12),Block.box(0,6,6,16,10,10),Block.box(6,6,0,10,10,16),Block.box(6,0,6,10,16,10));
 	public static final VoxelShape DOWN_AABB = Misc.rotateVoxelShape(Direction.DOWN, UP_AABB);
@@ -72,12 +77,28 @@ public class MechanicalCoreBlock extends EmbersEntityBlock implements SimpleWate
 		return Shapes.block();
 	}
 
-	//okay this is jank but I don't see how this could possibly go wrong
+	// Mechanical cores relay comparator-style neighbor notifications through proxy chains.
 	@Override
 	public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
 		Direction facing = state.getValue(BlockStateProperties.FACING);
 		if (pos.relative(facing).equals(neighbor) || pos.relative(facing.getOpposite()).equals(neighbor)) {
-			level.getBlockEntity(pos).getLevel().updateNeighbourForOutputSignal(pos, state.getBlock());
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			if (blockEntity == null || !blockEntity.hasLevel()) {
+				return;
+			}
+			Set<BlockPos> activeUpdates = ACTIVE_OUTPUT_UPDATES.get();
+			BlockPos immutablePos = pos.immutable();
+			if (!activeUpdates.add(immutablePos)) {
+				return;
+			}
+			try {
+				blockEntity.getLevel().updateNeighbourForOutputSignal(pos, state.getBlock());
+			} finally {
+				activeUpdates.remove(immutablePos);
+				if (activeUpdates.isEmpty()) {
+					ACTIVE_OUTPUT_UPDATES.remove();
+				}
+			}
 		}
 	}
 
