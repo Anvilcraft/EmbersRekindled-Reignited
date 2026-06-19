@@ -40,6 +40,7 @@ public class CrystalSeedBlockEntity extends BlockEntity implements IEmberInjecta
 	public String type;
 	public ResourceLocation texture;
 	public TagKey<Item> tag;
+	public int tintColor = 0xFFFFFF;
 	public boolean[] willSpawn;
 	public int size = 0;
 	public int xp = 0;
@@ -59,6 +60,12 @@ public class CrystalSeedBlockEntity extends BlockEntity implements IEmberInjecta
 	public CrystalSeedBlockEntity(BlockEntityType<?> entityType, BlockPos pos, BlockState blockState, String type) {
 		super(entityType, pos, blockState);
 		willSpawn = getSpawns(xp);
+		setSeedType(type);
+	}
+
+	public static final ResourceLocation DYNAMIC_TEXTURE = ResourceLocation.parse(Embers.MODID + ":textures/block/material_tin.png");
+
+	public void setSeedType(String type) {
 		this.type = type;
 		this.texture = ResourceLocation.parse(Embers.MODID + ":textures/block/material_" + type + ".png");
 		this.tag = ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "nuggets/" + type));

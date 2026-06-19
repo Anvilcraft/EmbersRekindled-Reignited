@@ -17,10 +17,14 @@ import com.rekindled.embers.item.ClockworkToolItem;
 import com.rekindled.embers.network.PacketHandler;
 import com.rekindled.embers.network.message.MessageEmberGenOffset;
 import com.rekindled.embers.network.message.MessageWorldSeed;
+import com.rekindled.embers.particle.GlowParticleOptions;
+import com.rekindled.embers.particle.SparkParticleOptions;
 import com.rekindled.embers.research.ResearchManager;
 import com.rekindled.embers.util.EmberGenUtil;
+import com.rekindled.embers.util.EmbersColors;
 import com.rekindled.embers.util.EmberWorldData;
 import com.rekindled.embers.util.ExplosionCharmWorldInfo;
+import com.rekindled.embers.util.DynamicMetalSeeds;
 import com.rekindled.embers.util.Misc;
 
 import net.minecraft.core.component.DataComponents;
@@ -228,6 +232,7 @@ public class EmbersEvents {
 
 	public static void onTagsReload(TagsUpdatedEvent event) {
 		if (event.shouldUpdateStaticData()) {
+			DynamicMetalSeeds.refresh();
 			ResearchManager.reloadLookupIngredients();
 		}
 	}
@@ -238,13 +243,43 @@ public class EmbersEvents {
 			double heat = AugmentUtil.getHeat(stack);
 			if (heat < maxHeat) {
 				AugmentUtil.addHeat(stack, added);
+				spawnHeatProgressParticles(entity, added);
 				syncPlayerInventory(entity);
-				if (heat + added >= maxHeat)
+				if (heat + added >= maxHeat) {
+					spawnHeatLevelUpParticles(entity);
 					entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(), EmbersSounds.HEATED_ITEM_LEVELUP.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+				}
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private static void spawnHeatProgressParticles(Entity entity, float added) {
+		if (!(entity.level() instanceof ServerLevel serverLevel)) {
+			return;
+		}
+		int count = Math.max(2, Math.min(12, Mth.ceil(added * 2.0f)));
+		serverLevel.sendParticles(new GlowParticleOptions(EmbersColors.EMBER_ID, 2.0F, 32),
+				entity.getX(),
+				entity.getY() + entity.getBbHeight() * 0.6,
+				entity.getZ(),
+				count,
+				0.2,
+				0.25,
+				0.2,
+				0.02);
+	}
+
+	private static void spawnHeatLevelUpParticles(Entity entity) {
+		if (!(entity.level() instanceof ServerLevel serverLevel)) {
+			return;
+		}
+		double x = entity.getX();
+		double y = entity.getY() + entity.getBbHeight() * 0.6;
+		double z = entity.getZ();
+		serverLevel.sendParticles(new SparkParticleOptions(EmbersColors.EMBER_ID, 1.0f), x, y, z, 12, 0.18, 0.18, 0.18, 1.0);
+		serverLevel.sendParticles(new GlowParticleOptions(EmbersColors.EMBER_ID, 3.0F, 40), x, y, z, 24, 0.2, 0.2, 0.2, 0.05);
 	}
 
 	private static void syncPlayerInventory(Entity entity) {

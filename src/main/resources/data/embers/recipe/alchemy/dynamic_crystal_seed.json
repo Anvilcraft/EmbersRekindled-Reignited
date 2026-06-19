@@ -1,0 +1,14 @@
+{
+  "type": "embers:dynamic_metal_seed_alchemy",
+  "aspects": [
+    {
+      "tag": "embers:aspectus/iron"
+    },
+    {
+      "tag": "embers:aspectus/silver"
+    }
+  ],
+  "tablet": {
+    "tag": "embers:crystal_seeds"
+  }
+}

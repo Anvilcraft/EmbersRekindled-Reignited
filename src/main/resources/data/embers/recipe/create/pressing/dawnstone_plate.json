@@ -1,0 +1,33 @@
+{
+  "type": "create:pressing",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/dawnstone"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/dawnstone"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "tag": "c:ingots/dawnstone"
+    }
+  ],
+  "results": [
+    {
+      "id": "embers:dawnstone_plate"
+    }
+  ]
+}

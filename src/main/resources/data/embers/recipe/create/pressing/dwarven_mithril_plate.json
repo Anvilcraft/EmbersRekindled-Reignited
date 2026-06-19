@@ -1,0 +1,33 @@
+{
+  "type": "create:pressing",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/dwarven_mithril"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/dwarven_mithril"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "tag": "c:ingots/dwarven_mithril"
+    }
+  ],
+  "results": [
+    {
+      "id": "embers:mithril_plate"
+    }
+  ]
+}

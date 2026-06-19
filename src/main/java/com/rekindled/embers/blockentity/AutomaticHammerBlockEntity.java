@@ -3,7 +3,6 @@ package com.rekindled.embers.blockentity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rekindled.embers.ConfigManager;
 import com.rekindled.embers.Embers;
 import com.rekindled.embers.RegistryManager;
 import com.rekindled.embers.api.capabilities.EmbersCapabilities;
@@ -17,6 +16,7 @@ import com.rekindled.embers.api.tile.IMechanicallyPowered;
 import com.rekindled.embers.api.tile.IUpgradeable;
 import com.rekindled.embers.api.upgrades.UpgradeContext;
 import com.rekindled.embers.api.upgrades.UpgradeUtil;
+import com.rekindled.embers.compat.sublevel.SubLevelCompat;
 import com.rekindled.embers.power.DefaultEmberCapability;
 import com.rekindled.embers.util.Misc;
 
@@ -102,12 +102,12 @@ public class AutomaticHammerBlockEntity extends BlockEntity implements IMechanic
 		UpgradeUtil.verifyUpgrades(blockEntity, blockEntity.upgrades);
 		if (UpgradeUtil.doTick(blockEntity, blockEntity.upgrades))
 			return;
-		BlockEntity tile = level.getBlockEntity(pos.below().relative(facing));
+		BlockEntity tile = getHammerTarget(blockEntity, facing);
 		if (tile instanceof IHammerable) {
 			double ember_cost = UpgradeUtil.getTotalEmberConsumption(blockEntity, EMBER_COST, blockEntity.upgrades);
 			IHammerable hammerable = (IHammerable) tile;
-			boolean redstoneEnabled = ConfigManager.isRedstoneControlActive(level, pos);
-			if (hammerable.isValid() && redstoneEnabled && blockEntity.capability.getEmber() >= ember_cost) {
+			boolean hasRedstoneSignal = level.getBestNeighborSignal(pos) > 0;
+			if (hammerable.isValid() && hasRedstoneSignal && blockEntity.capability.getEmber() >= ember_cost) {
 				boolean cancel = UpgradeUtil.doWork(blockEntity, blockEntity.upgrades);
 				int processTime = UpgradeUtil.getWorkTime(blockEntity, PROCESS_TIME, blockEntity.upgrades);
 				if (!cancel && blockEntity.startTime + processTime < level.getGameTime()) {
@@ -122,6 +122,15 @@ public class AutomaticHammerBlockEntity extends BlockEntity implements IMechanic
 				hammerable.onHit(blockEntity);
 			}
 		}
+	}
+
+	private static BlockEntity getHammerTarget(AutomaticHammerBlockEntity blockEntity, Direction facing) {
+		BlockPos targetPos = blockEntity.getBlockPos().below().relative(facing);
+		if (SubLevelCompat.isInSubLevel(blockEntity)) {
+			return SubLevelCompat.findAtPhysicalPosition(blockEntity, targetPos);
+		}
+		Level level = blockEntity.getLevel();
+		return level == null ? null : level.getBlockEntity(targetPos);
 	}
 
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {

@@ -48,6 +48,7 @@ import com.rekindled.embers.entity.render.GlimmerProjectileRenderer;
 import com.rekindled.embers.fluidtypes.EmbersFluidType;
 import com.rekindled.embers.gui.SlateScreen;
 import com.rekindled.embers.item.AlchemicalNoteItemClientExtensions;
+import com.rekindled.embers.item.DynamicCrystalSeedBlockItem;
 import com.rekindled.embers.item.EmberStorageItem;
 import com.rekindled.embers.item.TyrfingItem;
 import com.rekindled.embers.model.AncientGolemModel;
@@ -214,6 +215,7 @@ public final class EmbersClientModEvents {
 		event.registerBlockEntityRenderer(RegistryManager.PLATINUM_CRYSTAL_SEED.BLOCKENTITY.get(), CrystalSeedBlockEntityRenderer::new);
 		event.registerBlockEntityRenderer(RegistryManager.URANIUM_CRYSTAL_SEED.BLOCKENTITY.get(), CrystalSeedBlockEntityRenderer::new);
 		event.registerBlockEntityRenderer(RegistryManager.DAWNSTONE_CRYSTAL_SEED.BLOCKENTITY.get(), CrystalSeedBlockEntityRenderer::new);
+		event.registerBlockEntityRenderer(RegistryManager.DYNAMIC_CRYSTAL_SEED_ENTITY.get(), CrystalSeedBlockEntityRenderer::new);
 		event.registerBlockEntityRenderer(RegistryManager.FIELD_CHART_ENTITY.get(), FieldChartBlockEntityRenderer::new);
 		event.registerBlockEntityRenderer(RegistryManager.CINDER_PLINTH_ENTITY.get(), CinderPlinthBlockEntityRenderer::new);
 		event.registerBlockEntityRenderer(RegistryManager.DAWNSTONE_ANVIL_ENTITY.get(), DawnstoneAnvilBlockEntityRenderer::new);
@@ -243,6 +245,7 @@ public final class EmbersClientModEvents {
 		}
 		event.register(emberContainerColor, RegistryManager.EMBER_JAR.get(), RegistryManager.EMBER_CARTRIDGE.get());
 		event.register(new TyrfingItem.ColorHandler(), RegistryManager.TYRFING.get());
+		event.register((stack, tintIndex) -> tintIndex == 0 ? DynamicCrystalSeedBlockItem.getColor(stack) : 0xFFFFFF, RegistryManager.DYNAMIC_CRYSTAL_SEED_ITEM.get());
 	}
 
 	@SubscribeEvent
@@ -255,6 +258,7 @@ public final class EmbersClientModEvents {
 		event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(Embers.MODID, "block/atmospheric_bellows_top")));
 		event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(Embers.MODID, "block/atmospheric_bellows_leather")));
 		event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(Embers.MODID, "block/stamper_arm")));
+		event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(Embers.MODID, "block/automatic_hammer_end")));
 		event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(Embers.MODID, "block/inferno_forge_hatch")));
 	}
 

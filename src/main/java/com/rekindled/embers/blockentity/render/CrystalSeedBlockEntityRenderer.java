@@ -18,6 +18,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 public class CrystalSeedBlockEntityRenderer implements BlockEntityRenderer<CrystalSeedBlockEntity> {
 
+	private int red = 255;
+	private int green = 255;
+	private int blue = 255;
+
 	public CrystalSeedBlockEntityRenderer(BlockEntityRendererProvider.Context pContext) {
 
 	}
@@ -26,6 +30,9 @@ public class CrystalSeedBlockEntityRenderer implements BlockEntityRenderer<Cryst
 	public void render(CrystalSeedBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
 		if (blockEntity != null) {
 			VertexConsumer buffer = bufferSource.getBuffer(EmbersRenderTypes.CRYSTAL_SEED.apply(blockEntity.texture));
+			red = blockEntity.tintColor >> 16 & 255;
+			green = blockEntity.tintColor >> 8 & 255;
+			blue = blockEntity.tintColor & 255;
 
 			poseStack.pushPose();
 			poseStack.translate(0.5, 0.5, 0.5);
@@ -92,36 +99,36 @@ public class CrystalSeedBlockEntityRenderer implements BlockEntityRenderer<Cryst
 		Vector3f normal7 = new Vector3f(normal1).mul(-1.0f);
 		Vector3f normal8 = new Vector3f(normal2).mul(-1.0f);
 
-		b.addVertex(matrix4f, pos1X, pos1Y, pos1Z).setColor(255, 255, 255, 255).setUv((minU+maxU)/2.0f, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal1.x,(float)-normal1.y,(float)normal1.z);
-		b.addVertex(matrix4f, pos3X, pos3Y, pos3Z).setColor(255, 255, 255, 255).setUv(maxU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal1.x,(float)-normal1.y,(float)normal1.z);
-		b.addVertex(matrix4f, pos2X, pos2Y, pos2Z).setColor(255, 255, 255, 255).setUv(minU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal1.x,(float)-normal1.y,(float)normal1.z);
+		b.addVertex(matrix4f, pos1X, pos1Y, pos1Z).setColor(red, green, blue, 255).setUv((minU+maxU)/2.0f, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal1.x,(float)-normal1.y,(float)normal1.z);
+		b.addVertex(matrix4f, pos3X, pos3Y, pos3Z).setColor(red, green, blue, 255).setUv(maxU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal1.x,(float)-normal1.y,(float)normal1.z);
+		b.addVertex(matrix4f, pos2X, pos2Y, pos2Z).setColor(red, green, blue, 255).setUv(minU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal1.x,(float)-normal1.y,(float)normal1.z);
 
-		b.addVertex(matrix4f, pos1X, pos1Y, pos1Z).setColor(255, 255, 255, 255).setUv((minU+maxU)/2.0f, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal2.x,(float)-normal2.y,(float)normal2.z);
-		b.addVertex(matrix4f, pos4X, pos4Y, pos4Z).setColor(255, 255, 255, 255).setUv(maxU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal2.x,(float)-normal2.y,(float)normal2.z);
-		b.addVertex(matrix4f, pos3X, pos3Y, pos3Z).setColor(255, 255, 255, 255).setUv(minU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal2.x,(float)-normal2.y,(float)normal2.z);
+		b.addVertex(matrix4f, pos1X, pos1Y, pos1Z).setColor(red, green, blue, 255).setUv((minU+maxU)/2.0f, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal2.x,(float)-normal2.y,(float)normal2.z);
+		b.addVertex(matrix4f, pos4X, pos4Y, pos4Z).setColor(red, green, blue, 255).setUv(maxU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal2.x,(float)-normal2.y,(float)normal2.z);
+		b.addVertex(matrix4f, pos3X, pos3Y, pos3Z).setColor(red, green, blue, 255).setUv(minU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal2.x,(float)-normal2.y,(float)normal2.z);
 
-		b.addVertex(matrix4f, pos1X, pos1Y, pos1Z).setColor(255, 255, 255, 255).setUv((minU+maxU)/2.0f, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal3.x,(float)-normal3.y,(float)normal3.z);
-		b.addVertex(matrix4f, pos5X, pos5Y, pos5Z).setColor(255, 255, 255, 255).setUv(maxU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal3.x,(float)-normal3.y,(float)normal3.z);
-		b.addVertex(matrix4f, pos4X, pos4Y, pos4Z).setColor(255, 255, 255, 255).setUv(minU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal3.x,(float)-normal3.y,(float)normal3.z);
+		b.addVertex(matrix4f, pos1X, pos1Y, pos1Z).setColor(red, green, blue, 255).setUv((minU+maxU)/2.0f, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal3.x,(float)-normal3.y,(float)normal3.z);
+		b.addVertex(matrix4f, pos5X, pos5Y, pos5Z).setColor(red, green, blue, 255).setUv(maxU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal3.x,(float)-normal3.y,(float)normal3.z);
+		b.addVertex(matrix4f, pos4X, pos4Y, pos4Z).setColor(red, green, blue, 255).setUv(minU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal3.x,(float)-normal3.y,(float)normal3.z);
 
-		b.addVertex(matrix4f, pos1X, pos1Y, pos1Z).setColor(255, 255, 255, 255).setUv((minU+maxU)/2.0f, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal4.x,(float)-normal4.y,(float)normal4.z);
-		b.addVertex(matrix4f, pos2X, pos2Y, pos2Z).setColor(255, 255, 255, 255).setUv(maxU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal4.x,(float)-normal4.y,(float)normal4.z);
-		b.addVertex(matrix4f, pos5X, pos5Y, pos5Z).setColor(255, 255, 255, 255).setUv(minU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal4.x,(float)-normal4.y,(float)normal4.z);
+		b.addVertex(matrix4f, pos1X, pos1Y, pos1Z).setColor(red, green, blue, 255).setUv((minU+maxU)/2.0f, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal4.x,(float)-normal4.y,(float)normal4.z);
+		b.addVertex(matrix4f, pos2X, pos2Y, pos2Z).setColor(red, green, blue, 255).setUv(maxU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal4.x,(float)-normal4.y,(float)normal4.z);
+		b.addVertex(matrix4f, pos5X, pos5Y, pos5Z).setColor(red, green, blue, 255).setUv(minU, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal4.x,(float)-normal4.y,(float)normal4.z);
 
-		b.addVertex(matrix4f, pos6X, pos6Y, pos6Z).setColor(255, 255, 255, 255).setUv((minU+maxU)/2.0f, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal5.x,(float)-normal5.y,(float)normal5.z);
-		b.addVertex(matrix4f, pos2X, pos2Y, pos2Z).setColor(255, 255, 255, 255).setUv(minU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal5.x,(float)-normal5.y,(float)normal5.z);
-		b.addVertex(matrix4f, pos3X, pos3Y, pos3Z).setColor(255, 255, 255, 255).setUv(maxU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal5.x,(float)-normal5.y,(float)normal5.z);
+		b.addVertex(matrix4f, pos6X, pos6Y, pos6Z).setColor(red, green, blue, 255).setUv((minU+maxU)/2.0f, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal5.x,(float)-normal5.y,(float)normal5.z);
+		b.addVertex(matrix4f, pos2X, pos2Y, pos2Z).setColor(red, green, blue, 255).setUv(minU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal5.x,(float)-normal5.y,(float)normal5.z);
+		b.addVertex(matrix4f, pos3X, pos3Y, pos3Z).setColor(red, green, blue, 255).setUv(maxU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal5.x,(float)-normal5.y,(float)normal5.z);
 
-		b.addVertex(matrix4f, pos6X, pos6Y, pos6Z).setColor(255, 255, 255, 255).setUv((minU+maxU)/2.0f, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal6.x,(float)-normal6.y,(float)normal6.z);
-		b.addVertex(matrix4f, pos3X, pos3Y, pos3Z).setColor(255, 255, 255, 255).setUv(minU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal6.x,(float)-normal6.y,(float)normal6.z);
-		b.addVertex(matrix4f, pos4X, pos4Y, pos4Z).setColor(255, 255, 255, 255).setUv(maxU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal6.x,(float)-normal6.y,(float)normal6.z);
+		b.addVertex(matrix4f, pos6X, pos6Y, pos6Z).setColor(red, green, blue, 255).setUv((minU+maxU)/2.0f, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal6.x,(float)-normal6.y,(float)normal6.z);
+		b.addVertex(matrix4f, pos3X, pos3Y, pos3Z).setColor(red, green, blue, 255).setUv(minU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal6.x,(float)-normal6.y,(float)normal6.z);
+		b.addVertex(matrix4f, pos4X, pos4Y, pos4Z).setColor(red, green, blue, 255).setUv(maxU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal6.x,(float)-normal6.y,(float)normal6.z);
 
-		b.addVertex(matrix4f, pos6X, pos6Y, pos6Z).setColor(255, 255, 255, 255).setUv((minU+maxU)/2.0f, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal7.x,(float)-normal7.y,(float)normal7.z);
-		b.addVertex(matrix4f, pos4X, pos4Y, pos4Z).setColor(255, 255, 255, 255).setUv(minU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal7.x,(float)-normal7.y,(float)normal7.z);
-		b.addVertex(matrix4f, pos5X, pos5Y, pos5Z).setColor(255, 255, 255, 255).setUv(maxU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal7.x,(float)-normal7.y,(float)normal7.z);
+		b.addVertex(matrix4f, pos6X, pos6Y, pos6Z).setColor(red, green, blue, 255).setUv((minU+maxU)/2.0f, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal7.x,(float)-normal7.y,(float)normal7.z);
+		b.addVertex(matrix4f, pos4X, pos4Y, pos4Z).setColor(red, green, blue, 255).setUv(minU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal7.x,(float)-normal7.y,(float)normal7.z);
+		b.addVertex(matrix4f, pos5X, pos5Y, pos5Z).setColor(red, green, blue, 255).setUv(maxU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal7.x,(float)-normal7.y,(float)normal7.z);
 
-		b.addVertex(matrix4f, pos6X, pos6Y, pos6Z).setColor(255, 255, 255, 255).setUv((minU+maxU)/2.0f, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal8.x,(float)-normal8.y,(float)normal8.z);
-		b.addVertex(matrix4f, pos5X, pos5Y, pos5Z).setColor(255, 255, 255, 255).setUv(minU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal8.x,(float)-normal8.y,(float)normal8.z);
-		b.addVertex(matrix4f, pos2X, pos2Y, pos2Z).setColor(255, 255, 255, 255).setUv(maxU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal8.x,(float)-normal8.y,(float)normal8.z);
+		b.addVertex(matrix4f, pos6X, pos6Y, pos6Z).setColor(red, green, blue, 255).setUv((minU+maxU)/2.0f, minV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal8.x,(float)-normal8.y,(float)normal8.z);
+		b.addVertex(matrix4f, pos5X, pos5Y, pos5Z).setColor(red, green, blue, 255).setUv(minU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal8.x,(float)-normal8.y,(float)normal8.z);
+		b.addVertex(matrix4f, pos2X, pos2Y, pos2Z).setColor(red, green, blue, 255).setUv(maxU, maxV).setOverlay(packedOverlay).setLight(packedLight).setNormal((float)normal8.x,(float)-normal8.y,(float)normal8.z);
 	}
 }

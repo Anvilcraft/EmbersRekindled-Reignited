@@ -17,15 +17,19 @@ import com.rekindled.embers.recipe.IMetalCoefficientRecipe;
 import com.rekindled.embers.recipe.IMixingRecipe;
 import com.rekindled.embers.recipe.IStampingRecipe;
 import com.rekindled.embers.recipe.IVisuallySplitRecipe;
+import com.rekindled.embers.item.DynamicCrystalSeedBlockItem;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -56,6 +60,21 @@ public class JEIPlugin implements IModPlugin {
 	@Override
 	public ResourceLocation getPluginUid() {
 		return pluginID;
+	}
+
+	@Override
+	public void registerItemSubtypes(ISubtypeRegistration registry) {
+		registry.registerSubtypeInterpreter(RegistryManager.DYNAMIC_CRYSTAL_SEED_ITEM.get(), new ISubtypeInterpreter<ItemStack>() {
+			@Override
+			public Object getSubtypeData(ItemStack stack, UidContext context) {
+				return DynamicCrystalSeedBlockItem.getMetal(stack);
+			}
+
+			@Override
+			public String getLegacyStringSubtypeInfo(ItemStack stack, UidContext context) {
+				return DynamicCrystalSeedBlockItem.getMetal(stack);
+			}
+		});
 	}
 
 	@Override

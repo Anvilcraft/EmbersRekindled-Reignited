@@ -59,6 +59,7 @@ import com.rekindled.embers.block.CrystalCellBlock;
 import com.rekindled.embers.block.CrystalCellEdgeBlock;
 import com.rekindled.embers.block.CrystalSeedBlock;
 import com.rekindled.embers.block.DawnstoneAnvilBlock;
+import com.rekindled.embers.block.DynamicCrystalSeedBlock;
 import com.rekindled.embers.block.EmberActivatorBlock;
 import com.rekindled.embers.block.EmberBoreBlock;
 import com.rekindled.embers.block.EmberBoreEdgeBlock;
@@ -134,6 +135,7 @@ import com.rekindled.embers.blockentity.CreativeEmberBlockEntity;
 import com.rekindled.embers.blockentity.CrystalCellBlockEntity;
 import com.rekindled.embers.blockentity.CrystalSeedBlockEntity;
 import com.rekindled.embers.blockentity.DawnstoneAnvilBlockEntity;
+import com.rekindled.embers.blockentity.DynamicCrystalSeedBlockEntity;
 import com.rekindled.embers.blockentity.EmberActivatorBottomBlockEntity;
 import com.rekindled.embers.blockentity.EmberActivatorTopBlockEntity;
 import com.rekindled.embers.blockentity.EmberBoreBlockEntity;
@@ -208,6 +210,12 @@ import com.rekindled.embers.item.ClockworkHammerItem;
 import com.rekindled.embers.item.ClockworkPickaxeItem;
 import com.rekindled.embers.item.CodebreakingSlateItem;
 import com.rekindled.embers.item.CopperCellBlockItem;
+import com.rekindled.embers.item.DawnstoneAxeItem;
+import com.rekindled.embers.item.DawnstoneHoeItem;
+import com.rekindled.embers.item.DawnstonePickaxeItem;
+import com.rekindled.embers.item.DawnstoneShovelItem;
+import com.rekindled.embers.item.DawnstoneSwordItem;
+import com.rekindled.embers.item.DynamicCrystalSeedBlockItem;
 import com.rekindled.embers.item.EmberCartridgeItem;
 import com.rekindled.embers.item.EmberJarItem;
 import com.rekindled.embers.item.EmberRecordItem;
@@ -240,6 +248,7 @@ import com.rekindled.embers.recipe.AnvilRepairRecipe;
 import com.rekindled.embers.recipe.BoilingRecipe;
 import com.rekindled.embers.recipe.BoringRecipe;
 import com.rekindled.embers.recipe.CatalysisCombustionRecipe;
+import com.rekindled.embers.recipe.DynamicMetalSeedAlchemyRecipe;
 import com.rekindled.embers.recipe.EmberActivationRecipe;
 import com.rekindled.embers.recipe.ExcavationRecipe;
 import com.rekindled.embers.recipe.GaseousFuelRecipe;
@@ -262,6 +271,7 @@ import com.rekindled.embers.recipe.MixingRecipe;
 import com.rekindled.embers.recipe.StampingRecipe;
 import com.rekindled.embers.util.AshenAmuletLootModifier;
 import com.rekindled.embers.util.AshenArmorMaterial;
+import com.rekindled.embers.util.DynamicMetalSeeds;
 import com.rekindled.embers.util.EmbersTiers;
 import com.rekindled.embers.util.GrandhammerLootModifier;
 import com.rekindled.embers.util.LegacyDeferredRegister;
@@ -543,6 +553,7 @@ public class RegistryManager {
 	public static final MetalCrystalSeed URANIUM_CRYSTAL_SEED = new MetalCrystalSeed("uranium");
 	public static final MetalCrystalSeed DAWNSTONE_CRYSTAL_SEED = new MetalCrystalSeed("dawnstone");
 	public static final MetalCrystalSeed MITHRIL_CRYSTAL_SEED = new MetalCrystalSeed("dwarven_mithril");
+	public static final CompatRegistryObject<Block> DYNAMIC_CRYSTAL_SEED = BLOCKS.register("dynamic_crystal_seed", () -> new DynamicCrystalSeedBlock(Properties.of().mapColor(MapColor.NONE).sound(SoundType.AMETHYST).requiresCorrectToolForDrops().strength(1.6f).noOcclusion().forceSolidOn()));
 	public static final CompatRegistryObject<Block> FIELD_CHART = BLOCKS.register("field_chart", () -> new FieldChartBlock(Properties.of().mapColor(MapColor.COLOR_ORANGE).sound(SoundType.NETHER_BRICKS).requiresCorrectToolForDrops().strength(1.6f).noOcclusion()));
 	public static final CompatRegistryObject<Block> FIELD_CHART_EDGE = BLOCKS.register("field_chart_edge", () -> new FieldChartEdgeBlock(Properties.of().mapColor(MapColor.TERRACOTTA_BROWN).pushReaction(PushReaction.BLOCK).sound(EmbersSounds.ARCHAIC_MULTIBLOCK_EXTRA).requiresCorrectToolForDrops().strength(1.6f)));
 	public static final CompatRegistryObject<Block> IGNEM_REACTOR = BLOCKS.register("ignem_reactor", () -> new IgnemReactorBlock(Properties.of().mapColor(MapColor.COLOR_ORANGE).sound(EmbersSounds.MACHINE).requiresCorrectToolForDrops().strength(1.6f).noOcclusion().forceSolidOn()));
@@ -696,6 +707,7 @@ public class RegistryManager {
 	static { URANIUM_CRYSTAL_SEED.makeItem(); }
 	static { DAWNSTONE_CRYSTAL_SEED.makeItem(); }
 	static { MITHRIL_CRYSTAL_SEED.makeItem(); }
+	public static final CompatRegistryObject<Item> DYNAMIC_CRYSTAL_SEED_ITEM = ITEMS.register("dynamic_crystal_seed", () -> new DynamicCrystalSeedBlockItem(DYNAMIC_CRYSTAL_SEED.get(), new Item.Properties()));
 
 	public static final CompatRegistryObject<Item> RAW_CAMINITE_PLATE = ITEMS.register("raw_caminite_plate", () -> new Item(new Item.Properties()));
 	public static final CompatRegistryObject<Item> RAW_FLAT_STAMP = ITEMS.register("raw_flat_stamp", () -> new Item(new Item.Properties()));
@@ -756,7 +768,12 @@ public class RegistryManager {
 
 	public static final ToolSet LEAD_TOOLS = new ToolSet("lead", EmbersTiers.LEAD);
 	public static final ToolSet SILVER_TOOLS = new ToolSet("silver", EmbersTiers.SILVER);
-	public static final ToolSet DAWNSTONE_TOOLS = new ToolSet("dawnstone", EmbersTiers.DAWNSTONE);
+	public static final ToolSet DAWNSTONE_TOOLS = new ToolSet("dawnstone",
+			() -> new DawnstoneSwordItem(EmbersTiers.DAWNSTONE, new Item.Properties()),
+			() -> new DawnstoneShovelItem(new Item.Properties()),
+			() -> new DawnstonePickaxeItem(new Item.Properties()),
+			() -> new DawnstoneAxeItem(new Item.Properties()),
+			() -> new DawnstoneHoeItem(new Item.Properties()));
 
 	public static final CompatRegistryObject<Item> CAMINITE_BRICKS_ITEM = ITEMS.register("caminite_bricks", () -> new BlockItem(CAMINITE_BRICKS.get(), new Item.Properties()));
 	static { CAMINITE_BRICKS_DECO.makeItems(); }
@@ -975,6 +992,7 @@ public class RegistryManager {
 	public static final CompatRegistryObject<BlockEntityType<HeatExchangerBlockEntity>> HEAT_EXCHANGER_ENTITY = BLOCK_ENTITY_TYPES.register("heat_exchanger", () -> BlockEntityType.Builder.of(HeatExchangerBlockEntity::new, HEAT_EXCHANGER.get()).build(null));
 	public static final CompatRegistryObject<BlockEntityType<HeatInsulationBlockEntity>> HEAT_INSULATION_ENTITY = BLOCK_ENTITY_TYPES.register("heat_insulation", () -> BlockEntityType.Builder.of(HeatInsulationBlockEntity::new, HEAT_INSULATION.get()).build(null));
 	public static final CompatRegistryObject<BlockEntityType<ExcavationBucketsBlockEntity>> EXCAVATION_BUCKETS_ENTITY = BLOCK_ENTITY_TYPES.register("excavation_buckets", () -> BlockEntityType.Builder.of(ExcavationBucketsBlockEntity::new, EXCAVATION_BUCKETS.get()).build(null));
+	public static final CompatRegistryObject<BlockEntityType<DynamicCrystalSeedBlockEntity>> DYNAMIC_CRYSTAL_SEED_ENTITY = BLOCK_ENTITY_TYPES.register("dynamic_crystal_seed", () -> BlockEntityType.Builder.of(DynamicCrystalSeedBlockEntity::new, DYNAMIC_CRYSTAL_SEED.get()).build(null));
 
 	//creative tabs
 	public static final CompatRegistryObject<CreativeModeTab> EMBERS_TAB = CREATIVE_TABS.register("main_tab", () -> CreativeModeTab.builder()
@@ -985,6 +1003,10 @@ public class RegistryManager {
 				for (CompatRegistryObject<Item> item : ITEMS.getEntries()) {
 					if (item == MITHRIL_BLOCK_ITEM || item == MITHRIL_CRYSTAL_SEED.ITEM || item == MITHRIL_ASPECTUS || item == MITHRIL_INGOT || item == MITHRIL_NUGGET || item == MITHRIL_PLATE || item.get() == MOLTEN_MITHRIL.FLUID_BUCKET.get())
 						continue;
+					if (item.get() == DYNAMIC_CRYSTAL_SEED_ITEM.get()) {
+						DynamicMetalSeeds.getStacks().forEach(output::accept);
+						continue;
+					}
 					output.accept(item.get());
 					if (item == COPPER_CELL_ITEM)
 						output.accept(CopperCellBlockItem.getCharged());
@@ -1053,6 +1075,7 @@ public class RegistryManager {
 	public static final CompatRegistryObject<RecipeSerializer<MixingRecipe>> MIXING_SERIALIZER = RECIPE_SERIALIZERS.register("mixing", () -> MixingRecipe.SERIALIZER);
 	public static final CompatRegistryObject<RecipeSerializer<MetalCoefficientRecipe>> METAL_COEFFICIENT_SERIALIZER = RECIPE_SERIALIZERS.register("metal_coefficient", () -> MetalCoefficientRecipe.SERIALIZER);
 	public static final CompatRegistryObject<RecipeSerializer<AlchemyRecipe>> ALCHEMY_SERIALIZER = RECIPE_SERIALIZERS.register("alchemy", () -> AlchemyRecipe.SERIALIZER);
+	public static final CompatRegistryObject<RecipeSerializer<DynamicMetalSeedAlchemyRecipe>> DYNAMIC_METAL_SEED_ALCHEMY_SERIALIZER = RECIPE_SERIALIZERS.register("dynamic_metal_seed_alchemy", () -> DynamicMetalSeedAlchemyRecipe.SERIALIZER);
 	public static final CompatRegistryObject<RecipeSerializer<AlchemyRecipeForBabies>> ALCHEMY_FOR_BABIES_SERIALIZER = RECIPE_SERIALIZERS.register("alchemy_for_babies", () -> AlchemyRecipeForBabies.SERIALIZER);
 	public static final CompatRegistryObject<RecipeSerializer<BoilingRecipe>> BOILING_SERIALIZER = RECIPE_SERIALIZERS.register("boiling", () -> BoilingRecipe.SERIALIZER);
 	public static final CompatRegistryObject<RecipeSerializer<GaseousFuelRecipe>> GASEOUS_FUEL_SERIALIZER = RECIPE_SERIALIZERS.register("gaseous_fuel", () -> GaseousFuelRecipe.SERIALIZER);
@@ -1236,6 +1259,16 @@ public class RegistryManager {
 			PICKAXE = ITEMS.register(name + "_pickaxe", () -> new PickaxeItem(tier, new Item.Properties().attributes(PickaxeItem.createAttributes(tier, 1, -2.8F))));
 			AXE = ITEMS.register(name + "_axe", () -> new AxeItem(tier, new Item.Properties().attributes(AxeItem.createAttributes(tier, 6.0F, -3.0F))));
 			HOE = ITEMS.register(name + "_hoe", () -> new HoeItem(tier, new Item.Properties().attributes(HoeItem.createAttributes(tier, (int) -tier.getAttackDamageBonus(), Math.min(0.0F, tier.getAttackDamageBonus() - 3.0F)))));
+		}
+
+		public ToolSet(String name, Supplier<Item> sword, Supplier<Item> shovel, Supplier<Item> pickaxe, Supplier<Item> axe, Supplier<Item> hoe) {
+			this.name = name;
+
+			SWORD = ITEMS.register(name + "_sword", sword);
+			SHOVEL = ITEMS.register(name + "_shovel", shovel);
+			PICKAXE = ITEMS.register(name + "_pickaxe", pickaxe);
+			AXE = ITEMS.register(name + "_axe", axe);
+			HOE = ITEMS.register(name + "_hoe", hoe);
 		}
 	}
 
