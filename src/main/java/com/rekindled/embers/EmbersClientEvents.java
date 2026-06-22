@@ -217,26 +217,19 @@ public class EmbersClientEvents {	public static int ticks = 0;
 					if (lastTarget != null) {
 						Vec3 hitPos = SubLevelCompat.storedPhysicalPosition(player.level(), lastTarget, lastTargetSubLevel);
 						Vec3 oldPos = targetCenter;
-						Vec3 newPos = oldPos.add(motion);
+						Vec3 newPos = oldPos;
 
 						for (int i = 0; i <= 80; ++i) {
-							Vec3 targetVector = hitPos.subtract(newPos);
-							double length = targetVector.length();
-							targetVector = targetVector.scale(0.3 / length);
-							double weight = 0;
-							if (length <= 3) {
-								weight = 0.9 * ((3.0 - length) / 3.0);
-								if (length <= 0.2) {
-									break;
-								}
+							if (oldPos.distanceToSqr(hitPos) <= 1.0E-6D) {
+								break;
 							}
-							motion = new Vec3(
-									(0.9 - weight) * motion.x + (0.1 + weight) * targetVector.x,
-									(0.9 - weight) * motion.y + (0.1 + weight) * targetVector.y,
-									(0.9 - weight) * motion.z + (0.1 + weight) * targetVector.z);
+							motion = com.rekindled.embers.entity.EmberPacketEntity.calculateNextMovement(oldPos, hitPos, motion);
 							newPos = oldPos.add(motion);
 							lineDrawer.consume(oldPos.x, oldPos.y, oldPos.z, newPos.x, newPos.y, newPos.z);
 							oldPos = newPos;
+							if (oldPos.distanceToSqr(hitPos) <= 1.0E-6D) {
+								break;
+							}
 						}
 					} else {
 						motion = motion.scale(2.0);
@@ -357,27 +350,19 @@ public class EmbersClientEvents {	public static int ticks = 0;
 			Vec3 hitPos = SubLevelCompat.linkedTargetPhysicalPosition(emitterTile, target, targetSubLevelId);
 			Vec3 motion = SubLevelCompat.toPhysicalDirection(emitterTile, emitter.getEmittingDirection(side));
 			Vec3 oldPos = SubLevelCompat.toPhysicalPosition(emitterTile, Vec3.atCenterOf(emitterTile.getBlockPos()));
-			Vec3 newPos = oldPos.add(motion);
+			Vec3 newPos = oldPos;
 
 			for (int i = 0; i <= 80; ++i) {
-				Vec3 targetVector = hitPos.subtract(newPos);
-				double length = targetVector.length();
-				targetVector = targetVector.scale(0.3 / length);
-				double weight = 0;
-				if (length <= 3) {
-					weight = 0.9 * ((3.0 - length) / 3.0);
-					if (length <= 0.2) {
-						lineDrawer.consume(oldPos.x, oldPos.y, oldPos.z, hitPos.x, hitPos.y, hitPos.z);
-						break;
-					}
+				if (oldPos.distanceToSqr(hitPos) <= 1.0E-6D) {
+					break;
 				}
-				motion = new Vec3(
-						(0.9 - weight) * motion.x + (0.1 + weight) * targetVector.x,
-						(0.9 - weight) * motion.y + (0.1 + weight) * targetVector.y,
-						(0.9 - weight) * motion.z + (0.1 + weight) * targetVector.z);
+				motion = com.rekindled.embers.entity.EmberPacketEntity.calculateNextMovement(oldPos, hitPos, motion);
 				newPos = oldPos.add(motion);
 				lineDrawer.consume(oldPos.x, oldPos.y, oldPos.z, newPos.x, newPos.y, newPos.z);
 				oldPos = newPos;
+				if (oldPos.distanceToSqr(hitPos) <= 1.0E-6D) {
+					break;
+				}
 			}
 			return new EmberLineNode(target, targetSubLevelId);
 		}

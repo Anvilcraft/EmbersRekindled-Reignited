@@ -13,13 +13,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import com.rekindled.embers.compat.legacy.capabilities.ForgeCapabilities;
-import net.neoforged.neoforge.items.IItemHandler;
 
 public class ItemDialBlock extends DialBaseBlock {
 
@@ -27,31 +24,6 @@ public class ItemDialBlock extends DialBaseBlock {
 
 	public ItemDialBlock(Properties pProperties) {
 		super(pProperties);
-	}
-
-	@Override
-	public boolean hasAnalogOutputSignal(BlockState pState) {
-		return true;
-	}
-
-	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-		BlockEntity blockEntity = level.getBlockEntity(pos.relative(state.getValue(FACING), -1));
-		if (blockEntity != null) {
-			IItemHandler cap = com.rekindled.embers.util.CapabilityCompat.getCapability(blockEntity, ForgeCapabilities.ITEM_HANDLER, state.getValue(FACING).getOpposite()).orElse(com.rekindled.embers.util.CapabilityCompat.getCapability(blockEntity, ForgeCapabilities.ITEM_HANDLER, null).orElse(null));
-			if (cap != null) {
-				double contents = 0.0;
-				double capacity = 0.0;
-				for (int i = 0; i < cap.getSlots(); i++) {
-					contents += cap.getStackInSlot(i).getCount();
-					capacity += cap.getSlotLimit(i);
-				}
-				if (contents >= capacity)
-					return 15;
-				return (int) (Math.ceil(14.0 * contents / capacity));
-			}
-		}
-		return 0;
 	}
 
 	@Override

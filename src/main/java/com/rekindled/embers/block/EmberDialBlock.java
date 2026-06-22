@@ -5,8 +5,6 @@ import java.util.ArrayList;
 
 import com.rekindled.embers.Embers;
 import com.rekindled.embers.RegistryManager;
-import com.rekindled.embers.api.capabilities.EmbersCapabilities;
-import com.rekindled.embers.api.power.IEmberCapability;
 import com.rekindled.embers.blockentity.EmberDialBlockEntity;
 import com.rekindled.embers.util.DecimalFormats;
 
@@ -14,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
@@ -26,25 +23,6 @@ public class EmberDialBlock extends DialBaseBlock {
 
 	public EmberDialBlock(Properties pProperties) {
 		super(pProperties);
-	}
-
-	@Override
-	public boolean hasAnalogOutputSignal(BlockState pState) {
-		return true;
-	}
-
-	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-		BlockEntity blockEntity = level.getBlockEntity(pos.relative(state.getValue(FACING), -1));
-		if (blockEntity != null) {
-			IEmberCapability cap = com.rekindled.embers.util.CapabilityCompat.getCapability(blockEntity, EmbersCapabilities.EMBER_CAPABILITY, state.getValue(FACING).getOpposite()).orElse(com.rekindled.embers.util.CapabilityCompat.getCapability(blockEntity, EmbersCapabilities.EMBER_CAPABILITY, null).orElse(null));
-			if (cap != null) {
-				if (cap.getEmber() >= cap.getEmberCapacity())
-					return 15;
-				return (int) (Math.ceil(14.0 * cap.getEmber() / cap.getEmberCapacity()));
-			}
-		}
-		return 0;
 	}
 
 	@Override

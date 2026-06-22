@@ -3,12 +3,14 @@ package com.rekindled.embers.compat.jade;
 import com.rekindled.embers.Embers;
 import com.rekindled.embers.api.capabilities.EmbersCapabilities;
 import com.rekindled.embers.api.power.IEmberCapability;
+import com.rekindled.embers.api.tile.IExtraDialInformation;
+import com.rekindled.embers.block.DialBaseBlock;
 import com.rekindled.embers.block.MechEdgeBlockBase;
-import com.rekindled.embers.compat.legacy.capabilities.ForgeCapabilities;
-import com.rekindled.embers.util.CapabilityCompat;
 import com.rekindled.embers.util.ItemData;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,8 +18,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -44,6 +48,7 @@ public enum EmbersMachineProvider implements IBlockComponentProvider, IServerDat
 	INSTANCE;
 
 	private static final String DATA = "EmbersMachineData";
+	private static final String DIAL_INFORMATION = "DialInformation";
 	private static final String EMBER = "Ember";
 	private static final String EMBER_AMOUNT = "Amount";
 	private static final String EMBER_CAPACITY = "Capacity";
@@ -82,6 +87,7 @@ public enum EmbersMachineProvider implements IBlockComponentProvider, IServerDat
 		appendEnergy(tooltip, data);
 		appendItems(tooltip, accessor, data);
 		appendFluids(tooltip, accessor, data);
+		appendDialInformation(tooltip, accessor, data);
 	}
 
 	@Override
@@ -90,15 +96,14 @@ public enum EmbersMachineProvider implements IBlockComponentProvider, IServerDat
 			return;
 		}
 		BlockEntity blockEntity = getPrimaryBlockEntity(accessor);
-		if (blockEntity == null) {
-			return;
-		}
-
 		CompoundTag embersData = new CompoundTag();
-		appendEmberData(embersData, accessor, blockEntity);
-		appendEnergyData(embersData, accessor, blockEntity);
-		appendItemData(embersData, accessor, blockEntity);
-		appendFluidData(embersData, accessor, blockEntity);
+		appendDialInformationData(embersData, accessor);
+		if (blockEntity != null) {
+			appendEmberData(embersData, accessor, blockEntity);
+			appendEnergyData(embersData, accessor, blockEntity);
+			appendItemData(embersData, accessor, blockEntity);
+			appendFluidData(embersData, accessor, blockEntity);
+		}
 		if (!embersData.isEmpty()) {
 			data.put(DATA, embersData);
 		}
@@ -208,6 +213,42 @@ public enum EmbersMachineProvider implements IBlockComponentProvider, IServerDat
 		}
 	}
 
+	private static void appendDialInformation(ITooltip tooltip, BlockAccessor accessor, CompoundTag data) {
+		if (!data.contains(DIAL_INFORMATION, Tag.TAG_LIST)) {
+			return;
+		}
+		ListTag entries = data.getList(DIAL_INFORMATION, Tag.TAG_STRING);
+		for (Tag entry : entries) {
+			ComponentSerialization.FLAT_CODEC
+					.parse(accessor.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE), entry)
+					.result()
+					.ifPresent(tooltip::add);
+		}
+	}
+
+	private static void appendDialInformationData(CompoundTag data, BlockAccessor accessor) {
+		if (!(accessor.getBlock() instanceof DialBaseBlock dial)) {
+			return;
+		}
+		List<Component> information = new ArrayList<>(dial.getDisplayInfo(accessor.getLevel(), accessor.getPosition(), accessor.getBlockState(), 12));
+		Direction facing = accessor.getBlockState().getValue(BlockStateProperties.FACING);
+		BlockEntity directTarget = accessor.getLevel().getBlockEntity(accessor.getPosition().relative(facing.getOpposite()));
+		BlockEntity primaryTarget = getPrimaryBlockEntity(accessor);
+		if (primaryTarget != directTarget && primaryTarget instanceof IExtraDialInformation extraInformation) {
+			extraInformation.addDialInformation(facing, information, dial.getDialType());
+		}
+		ListTag entries = new ListTag();
+		for (Component component : information) {
+			ComponentSerialization.FLAT_CODEC
+					.encodeStart(accessor.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE), component)
+					.result()
+					.ifPresent(entries::add);
+		}
+		if (!entries.isEmpty()) {
+			data.put(DIAL_INFORMATION, entries);
+		}
+	}
+
 	private static void appendEmberData(CompoundTag data, BlockAccessor accessor, BlockEntity blockEntity) {
 		IEmberCapability ember = getEmber(accessor, blockEntity);
 		if (ember == null || ember.getEmberCapacity() <= 0 && ember.getEmber() <= 0) {
@@ -304,23 +345,25 @@ public enum EmbersMachineProvider implements IBlockComponentProvider, IServerDat
 	}
 
 	private static IItemHandler getItemHandler(BlockAccessor accessor, BlockEntity blockEntity) {
-		IItemHandler items = CapabilityCompat.getCapability(blockEntity, ForgeCapabilities.ITEM_HANDLER, accessor.getSide()).orElse(null);
+		Direction side = getCapabilitySide(accessor);
+		IItemHandler items = accessor.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, side);
 		if (items == null) {
-			items = CapabilityCompat.getCapability(blockEntity, ForgeCapabilities.ITEM_HANDLER, null).orElse(null);
+			items = accessor.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, null);
 		}
 		return items;
 	}
 
 	private static IFluidHandler getFluidHandler(BlockAccessor accessor, BlockEntity blockEntity) {
-		IFluidHandler fluids = CapabilityCompat.getCapability(blockEntity, ForgeCapabilities.FLUID_HANDLER, accessor.getSide()).orElse(null);
+		Direction side = getCapabilitySide(accessor);
+		IFluidHandler fluids = accessor.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, side);
 		if (fluids == null) {
-			fluids = CapabilityCompat.getCapability(blockEntity, ForgeCapabilities.FLUID_HANDLER, null).orElse(null);
+			fluids = accessor.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, null);
 		}
 		return fluids;
 	}
 
 	private static IEnergyStorage getEnergy(BlockAccessor accessor, BlockEntity blockEntity) {
-		IEnergyStorage energy = accessor.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, blockEntity.getBlockPos(), accessor.getSide());
+		IEnergyStorage energy = accessor.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, blockEntity.getBlockPos(), getCapabilitySide(accessor));
 		if (energy == null) {
 			energy = accessor.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, blockEntity.getBlockPos(), null);
 		}
@@ -345,16 +388,16 @@ public enum EmbersMachineProvider implements IBlockComponentProvider, IServerDat
 	}
 
 	private static IEmberCapability getEmberCapability(BlockEntity blockEntity, Direction preferredSide) {
-		IEmberCapability ember = CapabilityCompat.getCapability(blockEntity, EmbersCapabilities.EMBER_CAPABILITY, preferredSide).orElse(null);
+		IEmberCapability ember = blockEntity.getLevel().getCapability(EmbersCapabilities.EMBER_BLOCK_CAPABILITY, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, preferredSide);
 		if (ember != null) {
 			return ember;
 		}
-		ember = CapabilityCompat.getCapability(blockEntity, EmbersCapabilities.EMBER_CAPABILITY, null).orElse(null);
+		ember = blockEntity.getLevel().getCapability(EmbersCapabilities.EMBER_BLOCK_CAPABILITY, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, null);
 		if (ember != null) {
 			return ember;
 		}
 		for (Direction direction : Direction.values()) {
-			ember = CapabilityCompat.getCapability(blockEntity, EmbersCapabilities.EMBER_CAPABILITY, direction).orElse(null);
+			ember = blockEntity.getLevel().getCapability(EmbersCapabilities.EMBER_BLOCK_CAPABILITY, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, direction);
 			if (ember != null) {
 				return ember;
 			}
@@ -363,17 +406,41 @@ public enum EmbersMachineProvider implements IBlockComponentProvider, IServerDat
 	}
 
 	private static BlockEntity getPrimaryBlockEntity(BlockAccessor accessor) {
+		BlockState state = accessor.getBlockState();
+		if (accessor.getBlock() instanceof DialBaseBlock && state.hasProperty(BlockStateProperties.FACING)) {
+			Direction attachedSide = state.getValue(BlockStateProperties.FACING).getOpposite();
+			BlockPos attachedPos = accessor.getPosition().relative(attachedSide);
+			BlockEntity dialEntity = accessor.getBlockEntity();
+			if (dialEntity != null) {
+				BlockEntity attached = com.rekindled.embers.compat.sublevel.SubLevelCompat.findAdjacent(dialEntity, attachedSide);
+				if (attached != null) {
+					return attached;
+				}
+			}
+			BlockState attachedState = accessor.getLevel().getBlockState(attachedPos);
+			if (attachedState.hasProperty(MechEdgeBlockBase.EDGE)) {
+				attachedPos = attachedPos.offset(attachedState.getValue(MechEdgeBlockBase.EDGE).centerPos);
+			}
+			return accessor.getLevel().getBlockEntity(attachedPos);
+		}
 		BlockEntity blockEntity = accessor.getBlockEntity();
 		if (blockEntity != null) {
 			return blockEntity;
 		}
 
-		BlockState state = accessor.getBlockState();
 		if (state.hasProperty(MechEdgeBlockBase.EDGE)) {
 			BlockPos centerPos = accessor.getPosition().offset(state.getValue(MechEdgeBlockBase.EDGE).centerPos);
 			return accessor.getLevel().getBlockEntity(centerPos);
 		}
 		return null;
+	}
+
+	private static Direction getCapabilitySide(BlockAccessor accessor) {
+		BlockState state = accessor.getBlockState();
+		if (accessor.getBlock() instanceof DialBaseBlock && state.hasProperty(BlockStateProperties.FACING)) {
+			return state.getValue(BlockStateProperties.FACING).getOpposite();
+		}
+		return accessor.getSide();
 	}
 
 	private static BlockEntity getDoubleTallCounterpart(BlockEntity blockEntity) {

@@ -12,14 +12,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import com.rekindled.embers.compat.legacy.capabilities.ForgeCapabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class FluidDialBlock extends DialBaseBlock {
 
@@ -27,31 +24,6 @@ public class FluidDialBlock extends DialBaseBlock {
 
 	public FluidDialBlock(Properties pProperties) {
 		super(pProperties);
-	}
-
-	@Override
-	public boolean hasAnalogOutputSignal(BlockState pState) {
-		return true;
-	}
-
-	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-		BlockEntity blockEntity = level.getBlockEntity(pos.relative(state.getValue(FACING), -1));
-		if (blockEntity != null) {
-			IFluidHandler cap = com.rekindled.embers.util.CapabilityCompat.getCapability(blockEntity, ForgeCapabilities.FLUID_HANDLER, state.getValue(FACING).getOpposite()).orElse(com.rekindled.embers.util.CapabilityCompat.getCapability(blockEntity, ForgeCapabilities.FLUID_HANDLER, null).orElse(null));
-			if (cap != null) {
-				int totalCapacity = 0;
-				int totalContents = 0;
-				for (int i = 0; i < cap.getTanks(); i++) {
-					totalCapacity += cap.getTankCapacity(i);
-					totalContents += cap.getFluidInTank(i).getAmount();
-				}
-				if (totalContents >= totalCapacity)
-					return 15;
-				return (int) (Math.ceil(14.0 * totalContents / totalCapacity));
-			}
-		}
-		return 0;
 	}
 
 	@Override

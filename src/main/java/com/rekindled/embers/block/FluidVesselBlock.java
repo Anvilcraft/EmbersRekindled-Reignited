@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import com.rekindled.embers.RegistryManager;
 import com.rekindled.embers.blockentity.FluidVesselBlockEntity;
+import com.rekindled.embers.util.ComparatorSignalUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -118,7 +119,12 @@ public class FluidVesselBlock extends AbstractCauldronBlock implements EntityBlo
 
 	@Override
 	public boolean hasAnalogOutputSignal(BlockState state) {
-		return false;
+		return true;
+	}
+
+	@Override
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+		return ComparatorSignalUtil.getSignal(level, pos);
 	}
 
 	@Override

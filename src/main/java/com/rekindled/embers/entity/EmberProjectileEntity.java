@@ -238,12 +238,12 @@ public class EmberProjectileEntity extends Projectile {
 
 			getEntityData().set(lifetime, 20);
 			getEntityData().set(dead, true);
-			setDeltaMovement(Vec3.ZERO);
 
 			//double aoeRadius = getEntityData().get(value) * 0.125; //TODO
 
 			if(effect != null)
 				effect.onHit(level(), raytraceresult, preset);
+			setDeltaMovement(Vec3.ZERO);
 		}
 	}
 
