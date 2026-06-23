@@ -109,6 +109,20 @@ public class DawnstoneAnvilBlock extends EmbersEntityBlock implements SimpleWate
 	}
 
 	@Override
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+		if (level.getBlockEntity(pos) instanceof DawnstoneAnvilBlockEntity anvilEntity) {
+			int occupiedSlots = 0;
+			for (int slot = 0; slot < anvilEntity.inventory.getSlots(); slot++) {
+				if (!anvilEntity.inventory.getStackInSlot(slot).isEmpty()) {
+					occupiedSlots++;
+				}
+			}
+			return occupiedSlots;
+		}
+		return super.getAnalogOutputSignal(state, level, pos);
+	}
+
+	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
 		return pLevel.isClientSide ? null : createTickerHelper(pBlockEntityType, RegistryManager.DAWNSTONE_ANVIL_ENTITY.get(), DawnstoneAnvilBlockEntity::serverTick);
 	}

@@ -1416,7 +1416,7 @@
   "block.embers.create_powered_catalytic_plug": "Kinetic Catalytic Plug",
   "block.embers.create_powered_wildfire_stirling": "Kinetic Wildfire Stirling",
   "block.embers.create_powered_mnemonic_inscriber": "Kinetic Mnemonic Inscriber",
-  "item.embers.tinker_wrench": "Engioneer's Hammer",
+  "item.embers.tinker_wrench": "Engineer's Hammer",
   "tooltip.embers.tinker_wrench": "Works as an Embers Tinker Hammer and a Create wrench.",
   "tooltip.embers.create_powered_upgrade.desc.embers.mini_boiler": "A shaft-driven boiler that turns fluid into vapor as ember stirs nearby machines.",
   "tooltip.embers.create_powered_upgrade.desc.embers.catalytic_plug": "A shaft-driven plug that quickens nearby machines while feeding on gaseous fuel.",
