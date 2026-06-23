@@ -170,7 +170,7 @@ public class ConfigManager {
 		HEARTH_COIL_MAX_COOK_TIME = COMMON.comment("The time in ticks it takes to cook 1 item at the lowest heat.").define("hearth_coil.max_cook_time", 300);
 		CREATE_BLAZE_BURNER_EMBER_COST = COMMON.comment("The amount of ember a Create blaze burner consumes each tick while sustained by ember.").define("create.blaze_burner.ember_cost", 1.0);
 		CREATE_BLAZE_BURNER_SUPERHEAT_COST = COMMON.comment("The amount of ember a Create blaze burner consumes each tick while an Atmospheric Bellows or bellowed Hearth Coil is forcing it to superheat.").define("create.blaze_burner.superheat_cost", 8.0);
-		ENABLE_EXPERIMENTAL_CREATE_MECHANICS = COMMON.comment("Enables experimental Create-powered Embers machine upgrades and their recipes. Requires Create to be installed.").define("create.enable_experimental_create_mechanics", false);
+		ENABLE_EXPERIMENTAL_CREATE_MECHANICS = COMMON.comment("Enables experimental Create-powered Embers machine upgrades and their recipes. Requires Create to be installed.").define("create.enable_experimental_create_mechanics", true);
 
 		DAWNSTONE_ANVIL_MAX_HITS = COMMON.comment("The amount of hits required to perform one recipe on a dawnstone anvil.").define("dawnstone_anvil.max_hits", 40);
 
