@@ -19,9 +19,13 @@ final class CreateCompatClient {
 		event.enqueueWork(() -> SimpleBlockEntityVisualizer.builder(CreateCompat.EMBER_KINETIC_GENERATOR_ENTITY.get())
 				.factory(EmberKineticGeneratorVisual::new)
 				.apply());
+		event.enqueueWork(() -> SimpleBlockEntityVisualizer.builder(CreateCompat.CREATE_POWERED_UPGRADE_ENTITY.get())
+				.factory(CreatePoweredEmberUpgradeVisual::new)
+				.apply());
 	}
 
 	private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerBlockEntityRenderer(CreateCompat.EMBER_KINETIC_GENERATOR_ENTITY.get(), EmberKineticGeneratorRenderer::new);
+		event.registerBlockEntityRenderer(CreateCompat.CREATE_POWERED_UPGRADE_ENTITY.get(), CreatePoweredEmberUpgradeRenderer::new);
 	}
 }

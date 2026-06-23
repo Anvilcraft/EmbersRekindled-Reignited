@@ -31,7 +31,8 @@ public class EmbersMixinConfigPlugin implements IMixinConfigPlugin {
 			return loadingModList != null && loadingModList.getModFileById("jade") != null;
 		}
 		if ("com.rekindled.embers.mixin.CreateBlazeBurnerBlockEntityMixin".equals(mixinClassName)
-				|| "com.rekindled.embers.mixin.CreateBlazeBurnerBlockInteractionMixin".equals(mixinClassName)) {
+				|| "com.rekindled.embers.mixin.CreateBlazeBurnerBlockInteractionMixin".equals(mixinClassName)
+				|| "com.rekindled.embers.mixin.CreatePressDawnstoneAnvilMixin".equals(mixinClassName)) {
 			return loadingModList != null && loadingModList.getModFileById("create") != null;
 		}
 		if ("com.rekindled.embers.mixin.InfernoForgeSubLevelCollisionMixin".equals(mixinClassName)

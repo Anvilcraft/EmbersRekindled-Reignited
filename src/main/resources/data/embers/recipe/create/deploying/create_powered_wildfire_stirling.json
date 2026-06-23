@@ -1,0 +1,25 @@
+{
+  "type": "create:deploying",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    },
+    {
+      "type": "embers:experimental_create_mechanics"
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "embers:wildfire_stirling"
+    },
+    {
+      "item": "create:precision_mechanism"
+    }
+  ],
+  "results": [
+    {
+      "id": "embers:create_powered_wildfire_stirling"
+    }
+  ]
+}

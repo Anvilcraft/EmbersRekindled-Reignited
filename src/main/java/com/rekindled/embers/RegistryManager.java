@@ -252,6 +252,7 @@ import com.rekindled.embers.recipe.BoringRecipe;
 import com.rekindled.embers.recipe.CatalysisCombustionRecipe;
 import com.rekindled.embers.recipe.DynamicMetalSeedAlchemyRecipe;
 import com.rekindled.embers.recipe.EmberActivationRecipe;
+import com.rekindled.embers.recipe.ExperimentalCreateMechanicsCondition;
 import com.rekindled.embers.recipe.ExcavationRecipe;
 import com.rekindled.embers.recipe.GaseousFuelRecipe;
 import com.rekindled.embers.recipe.GemSocketRecipe;
@@ -350,6 +351,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
@@ -379,6 +381,7 @@ public class RegistryManager {
 	public static final CompatDeferredRegister<RecipeType<?>> RECIPE_TYPES = CompatDeferredRegister.create(BuiltInRegistries.RECIPE_TYPE, Embers.MODID);
 	public static final CompatDeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = CompatDeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, Embers.MODID);
 	public static final CompatDeferredRegister<com.mojang.serialization.MapCodec<? extends IGlobalLootModifier>> LOOT_MODIFIERS = CompatDeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Embers.MODID);
+	public static final CompatDeferredRegister<com.mojang.serialization.MapCodec<? extends ICondition>> CONDITION_SERIALIZERS = CompatDeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, Embers.MODID);
 	public static final CompatDeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPES = CompatDeferredRegister.create(BuiltInRegistries.LOOT_CONDITION_TYPE, Embers.MODID);
 	public static final CompatDeferredRegister<MenuType<?>> MENU_TYPES = CompatDeferredRegister.create(BuiltInRegistries.MENU, Embers.MODID);
 	public static final CompatDeferredRegister<StructureType<?>> STRUCTURE_TYPES = CompatDeferredRegister.create(Registries.STRUCTURE_TYPE, Embers.MODID);
@@ -1141,6 +1144,7 @@ public class RegistryManager {
 	public static final CompatRegistryObject<com.mojang.serialization.MapCodec<GrandhammerLootModifier>> GRANDHAMMER_MODIFIER = LOOT_MODIFIERS.register("grandhammer", () -> GrandhammerLootModifier.CODEC);
 	public static final CompatRegistryObject<com.mojang.serialization.MapCodec<SuperHeaterLootModifier>> SUPERHEATER_MODIFIER = LOOT_MODIFIERS.register("superheater", () -> SuperHeaterLootModifier.CODEC);
 	public static final CompatRegistryObject<com.mojang.serialization.MapCodec<AshenAmuletLootModifier>> ASHENAMULET_MODIFIER = LOOT_MODIFIERS.register("ashenamulet", () -> AshenAmuletLootModifier.CODEC);
+	public static final CompatRegistryObject<com.mojang.serialization.MapCodec<ExperimentalCreateMechanicsCondition>> EXPERIMENTAL_CREATE_MECHANICS_CONDITION = CONDITION_SERIALIZERS.register("experimental_create_mechanics", () -> ExperimentalCreateMechanicsCondition.CODEC);
 	public static final CompatRegistryObject<LootItemConditionType> MATCH_CURIO_CONDITION = LOOT_CONDITION_TYPES.register("match_curio", () -> new LootItemConditionType(MatchCurioLootCondition.CODEC));
 
 	//menu types

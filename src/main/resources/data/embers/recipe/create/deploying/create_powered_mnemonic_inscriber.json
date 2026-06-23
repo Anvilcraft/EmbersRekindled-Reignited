@@ -1,0 +1,25 @@
+{
+  "type": "create:deploying",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    },
+    {
+      "type": "embers:experimental_create_mechanics"
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "embers:mnemonic_inscriber"
+    },
+    {
+      "item": "create:cogwheel"
+    }
+  ],
+  "results": [
+    {
+      "id": "embers:create_powered_mnemonic_inscriber"
+    }
+  ]
+}

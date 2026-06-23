@@ -1,5 +1,6 @@
 package com.rekindled.embers.blockentity;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
 
@@ -26,12 +27,14 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import com.rekindled.embers.compat.legacy.capabilities.Capability;
 import com.rekindled.embers.compat.legacy.capabilities.ForgeCapabilities;
 import com.rekindled.embers.compat.legacy.LazyOptional;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
@@ -53,6 +56,11 @@ public class DawnstoneAnvilBlockEntity extends BlockEntity implements IHammerabl
 	public LazyOptional<IItemHandler> holder = LazyOptional.of(() -> inventory);
 	static Random random = new Random();
 	public IDawnstoneAnvilRecipe cachedRecipe = null;
+	private static Method createPressBridgeTick;
+	private static boolean createPressBridgeLookupFailed;
+	private long createPressPosition = Long.MIN_VALUE;
+	private int createPressLastTicks = -1;
+	private boolean createPressHitThisCycle;
 
 	public DawnstoneAnvilBlockEntity(BlockPos pPos, BlockState pBlockState) {
 		super(RegistryManager.DAWNSTONE_ANVIL_ENTITY.get(), pPos, pBlockState);
@@ -108,6 +116,77 @@ public class DawnstoneAnvilBlockEntity extends BlockEntity implements IHammerabl
 			((ServerLevel) level).getChunkSource().blockChanged(worldPosition);
 	}
 
+	public static void serverTick(Level level, BlockPos pos, BlockState state, DawnstoneAnvilBlockEntity blockEntity) {
+		if (level.isClientSide || !ModList.get().isLoaded("create")) {
+			return;
+		}
+		if (blockEntity.inventory.getStackInSlot(0).isEmpty() && blockEntity.inventory.getStackInSlot(1).isEmpty()) {
+			blockEntity.resetCreatePressCycle();
+			return;
+		}
+		blockEntity.tickCreatePressBridge();
+	}
+
+	private void tickCreatePressBridge() {
+		Method method = getCreatePressBridgeTick();
+		if (method == null) {
+			return;
+		}
+		try {
+			method.invoke(null, this);
+		} catch (ReflectiveOperationException ignored) {
+			createPressBridgeLookupFailed = true;
+		}
+	}
+
+	private static Method getCreatePressBridgeTick() {
+		if (createPressBridgeLookupFailed) {
+			return null;
+		}
+		if (createPressBridgeTick != null) {
+			return createPressBridgeTick;
+		}
+		try {
+			Class<?> bridge = Class.forName("com.rekindled.embers.compat.create.CreateDawnstoneAnvilPressBridge");
+			createPressBridgeTick = bridge.getMethod("tickAnvil", DawnstoneAnvilBlockEntity.class);
+			return createPressBridgeTick;
+		} catch (ReflectiveOperationException ignored) {
+			createPressBridgeLookupFailed = true;
+			return null;
+		}
+	}
+
+	public boolean hasProcessableRecipe() {
+		cachedRecipe = Misc.getRecipe(cachedRecipe, RegistryManager.DAWNSTONE_ANVIL_RECIPE.get(), new RecipeWrapper(inventory), level);
+		return cachedRecipe != null;
+	}
+
+	public void createPressCycleStarted(BlockPos pressPos) {
+		createPressPosition = pressPos.asLong();
+		createPressLastTicks = 0;
+		createPressHitThisCycle = false;
+	}
+
+	public boolean shouldCreatePressStrike(BlockPos pressPos, int runningTicks) {
+		long pressPosition = pressPos.asLong();
+		if (pressPosition != createPressPosition || runningTicks < createPressLastTicks || runningTicks <= 0) {
+			createPressPosition = pressPosition;
+			createPressHitThisCycle = false;
+		}
+		createPressLastTicks = runningTicks;
+		if (!createPressHitThisCycle && runningTicks >= 120 && hasProcessableRecipe()) {
+			createPressHitThisCycle = true;
+			return true;
+		}
+		return false;
+	}
+
+	public void resetCreatePressCycle() {
+		createPressPosition = Long.MIN_VALUE;
+		createPressLastTicks = -1;
+		createPressHitThisCycle = false;
+	}
+
 	public boolean onHit() {
 		RecipeWrapper context = new RecipeWrapper(inventory);
 		cachedRecipe = Misc.getRecipe(cachedRecipe, RegistryManager.DAWNSTONE_ANVIL_RECIPE.get(), context, level);
@@ -154,7 +233,6 @@ public class DawnstoneAnvilBlockEntity extends BlockEntity implements IHammerabl
 
 	@Override
 	public boolean isValid() {
-		cachedRecipe = Misc.getRecipe(cachedRecipe, RegistryManager.DAWNSTONE_ANVIL_RECIPE.get(), new RecipeWrapper(inventory), level);
-		return cachedRecipe != null;
+		return hasProcessableRecipe();
 	}
 }

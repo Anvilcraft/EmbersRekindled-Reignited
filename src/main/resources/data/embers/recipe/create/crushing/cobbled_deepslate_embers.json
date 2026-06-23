@@ -1,0 +1,33 @@
+{
+  "type": "create:crushing",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "minecraft:cobbled_deepslate"
+    }
+  ],
+  "processing_time": 350,
+  "results": [
+    {
+      "chance": 0.02,
+      "id": "embers:ember_grit"
+    },
+    {
+      "chance": 0.01,
+      "id": "embers:ember_shard"
+    },
+    {
+      "chance": 0.005,
+      "id": "embers:ember_crystal"
+    },
+    {
+      "chance": 0.0001,
+      "id": "embers:ember_crystal_cluster"
+    }
+  ]
+}

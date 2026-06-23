@@ -1,6 +1,9 @@
 {
   "values": [
-    "embers:tinker_hammer",
+    {
+      "id": "create:wrench",
+      "required": false
+    },
     {
       "id": "embers:tinker_wrench",
       "required": false

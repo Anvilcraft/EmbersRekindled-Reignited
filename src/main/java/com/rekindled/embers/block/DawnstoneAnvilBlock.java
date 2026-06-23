@@ -24,6 +24,8 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -50,7 +52,7 @@ public class DawnstoneAnvilBlock extends EmbersEntityBlock implements SimpleWate
 		if (level.getBlockEntity(pos) instanceof DawnstoneAnvilBlockEntity anvilEntity) {
 			ItemStack heldItem = player.getItemInHand(hand);
 			if (!heldItem.isEmpty()) {
-				if (heldItem.getItem() == RegistryManager.TINKER_HAMMER.get()) {
+				if (Misc.isHoldingHammer(player, hand)) {
 					if (anvilEntity.onHit())
 						return InteractionResult.SUCCESS;
 					return InteractionResult.PASS;
@@ -104,6 +106,11 @@ public class DawnstoneAnvilBlock extends EmbersEntityBlock implements SimpleWate
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
 		return RegistryManager.DAWNSTONE_ANVIL_ENTITY.get().create(pPos, pState);
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+		return pLevel.isClientSide ? null : createTickerHelper(pBlockEntityType, RegistryManager.DAWNSTONE_ANVIL_ENTITY.get(), DawnstoneAnvilBlockEntity::serverTick);
 	}
 
 	@Nullable

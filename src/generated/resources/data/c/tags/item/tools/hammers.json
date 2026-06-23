@@ -1,6 +1,10 @@
 {
   "values": [
     "embers:tinker_hammer",
-    "embers:grandhammer"
+    "embers:grandhammer",
+    {
+      "id": "embers:tinker_wrench",
+      "required": false
+    }
   ]
 }

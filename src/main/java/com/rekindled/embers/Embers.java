@@ -83,6 +83,7 @@ public class Embers {
 		RegistryManager.RECIPE_TYPES.register(modEventBus);
 		RegistryManager.RECIPE_SERIALIZERS.register(modEventBus);
 		RegistryManager.LOOT_MODIFIERS.register(modEventBus);
+		RegistryManager.CONDITION_SERIALIZERS.register(modEventBus);
 		RegistryManager.LOOT_CONDITION_TYPES.register(modEventBus);
 		RegistryManager.MENU_TYPES.register(modEventBus);
 		RegistryManager.STRUCTURE_TYPES.register(modEventBus);

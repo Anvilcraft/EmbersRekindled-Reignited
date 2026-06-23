@@ -1,5 +1,9 @@
 package com.rekindled.embers.compat.create;
 
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
+
 import com.rekindled.embers.Embers;
 import com.rekindled.embers.ConfigManager;
 import com.rekindled.embers.RegistryManager;
@@ -12,6 +16,7 @@ import com.rekindled.embers.item.AshenArmorItem;
 import com.rekindled.embers.item.MixedGogglesItem;
 import org.jetbrains.annotations.Nullable;
 
+import com.simibubi.create.api.stress.BlockStressValues;
 import com.simibubi.create.content.equipment.goggles.GogglesItem;
 import com.simibubi.create.api.behaviour.movement.MovementBehaviour;
 import com.simibubi.create.api.contraption.BlockMovementChecks;
@@ -19,12 +24,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
@@ -37,8 +46,10 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -50,6 +61,8 @@ public final class CreateCompat {
 	private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Embers.MODID);
 	private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
 			DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Embers.MODID);
+	private static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
+			DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Embers.MODID);
 
 	public static final DeferredBlock<EmberKineticGeneratorBlock> EMBER_KINETIC_GENERATOR = BLOCKS.register(
 			"ember_kinetic_generator",
@@ -61,9 +74,22 @@ public final class CreateCompat {
 	public static final DeferredItem<BlockItem> EMBER_KINETIC_GENERATOR_ITEM = ITEMS.registerSimpleBlockItem(EMBER_KINETIC_GENERATOR);
 	public static final DeferredItem<MixedGogglesItem> ENGINEERS_ASHEN_GOGGLES = ITEMS.register("engineers_ashen_goggles",
 			() -> new MixedGogglesItem(new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(AshenArmorItem.DURABILITY_MULTIPLIER)), ConfigManager.ASHEN_GOGGLES_SLOTS));
+	public static final Map<CreatePoweredUpgradeType, DeferredBlock<CreatePoweredEmberUpgradeBlock>> CREATE_POWERED_UPGRADES = registerCreatePoweredUpgradeBlocks();
+	public static final Map<CreatePoweredUpgradeType, DeferredItem<CreatePoweredUpgradeItem>> CREATE_POWERED_UPGRADE_ITEMS = registerCreatePoweredUpgradeItems();
+	public static final DeferredItem<TinkerWrenchItem> TINKER_WRENCH = ITEMS.register("tinker_wrench",
+			() -> new TinkerWrenchItem(new Item.Properties()));
+	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EMBERS_CREATE_TAB = CREATIVE_TABS.register("create",
+			() -> CreativeModeTab.builder()
+					.title(Component.translatable("itemGroup.embers.create"))
+					.icon(() -> new ItemStack(EMBER_KINETIC_GENERATOR_ITEM.get()))
+					.displayItems(CreateCompat::buildCreateTabContents)
+					.build());
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EmberKineticGeneratorBlockEntity>> EMBER_KINETIC_GENERATOR_ENTITY =
 			BLOCK_ENTITIES.register("ember_kinetic_generator",
 					() -> BlockEntityType.Builder.of(EmberKineticGeneratorBlockEntity::new, EMBER_KINETIC_GENERATOR.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CreatePoweredEmberUpgradeBlockEntity>> CREATE_POWERED_UPGRADE_ENTITY =
+			BLOCK_ENTITIES.register("create_powered_ember_upgrade",
+					() -> BlockEntityType.Builder.of(CreatePoweredEmberUpgradeBlockEntity::new, getCreatePoweredUpgradeBlocks()).build(null));
 
 	private CreateCompat() {
 	}
@@ -72,8 +98,8 @@ public final class CreateCompat {
 		BLOCKS.register(modEventBus);
 		ITEMS.register(modEventBus);
 		BLOCK_ENTITIES.register(modEventBus);
+		CREATIVE_TABS.register(modEventBus);
 		modEventBus.addListener(CreateCompat::commonSetup);
-		modEventBus.addListener(CreateCompat::addCreativeTabItem);
 		modEventBus.addListener(CreateCompat::registerCapabilities);
 		if (FMLEnvironment.dist.isClient()) {
 			CreateCompatClient.init(modEventBus);
@@ -102,6 +128,9 @@ public final class CreateCompat {
 			});
 			EmbersAPI.registerWearableLens(Ingredient.of(ENGINEERS_ASHEN_GOGGLES.get()));
 			EmbersAPI.registerEmberResonance(Ingredient.of(ENGINEERS_ASHEN_GOGGLES.get()), 2.0);
+			for (Map.Entry<CreatePoweredUpgradeType, DeferredBlock<CreatePoweredEmberUpgradeBlock>> entry : CREATE_POWERED_UPGRADES.entrySet()) {
+				BlockStressValues.IMPACTS.register(entry.getValue().get(), entry.getKey()::stressImpactPerRpm);
+			}
 		});
 	}
 
@@ -157,6 +186,16 @@ public final class CreateCompat {
 	private static void registerCapabilities(RegisterCapabilitiesEvent event) {
 		event.registerBlockEntity(EmbersCapabilities.EMBER_BLOCK_CAPABILITY, EMBER_KINETIC_GENERATOR_ENTITY.get(),
 				(blockEntity, side) -> blockEntity.getEmberCapability());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CREATE_POWERED_UPGRADE_ENTITY.get(),
+				(blockEntity, side) -> {
+					IItemHandler handler = blockEntity.getItemHandler(side);
+					return handler;
+				});
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CREATE_POWERED_UPGRADE_ENTITY.get(),
+				(blockEntity, side) -> {
+					IFluidHandler handler = blockEntity.getFluidHandler(side);
+					return handler;
+				});
 		BuiltInRegistries.BLOCK_ENTITY_TYPE
 				.getOptional(ResourceLocation.fromNamespaceAndPath("create", "blaze_heater"))
 				.ifPresent(type -> event.registerBlockEntity(EmbersCapabilities.EMBER_BLOCK_CAPABILITY, type,
@@ -165,10 +204,48 @@ public final class CreateCompat {
 								: null));
 	}
 
-	private static void addCreativeTabItem(BuildCreativeModeTabContentsEvent event) {
-		if (event.getTabKey().equals(RegistryManager.EMBERS_TAB.getKey())) {
-			event.accept(EMBER_KINETIC_GENERATOR_ITEM.get());
-			event.accept(ENGINEERS_ASHEN_GOGGLES.get());
+	private static void buildCreateTabContents(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+		output.accept(EMBER_KINETIC_GENERATOR_ITEM.get());
+		output.accept(ENGINEERS_ASHEN_GOGGLES.get());
+		output.accept(TINKER_WRENCH.get());
+		if (experimentalMechanicsEnabled()) {
+			for (DeferredItem<CreatePoweredUpgradeItem> item : CREATE_POWERED_UPGRADE_ITEMS.values()) {
+				output.accept(item.get());
+			}
 		}
+	}
+
+	public static boolean experimentalMechanicsEnabled() {
+		return ConfigManager.ENABLE_EXPERIMENTAL_CREATE_MECHANICS != null
+				&& ConfigManager.ENABLE_EXPERIMENTAL_CREATE_MECHANICS.get()
+				&& ModList.get().isLoaded("create");
+	}
+
+	private static Map<CreatePoweredUpgradeType, DeferredBlock<CreatePoweredEmberUpgradeBlock>> registerCreatePoweredUpgradeBlocks() {
+		EnumMap<CreatePoweredUpgradeType, DeferredBlock<CreatePoweredEmberUpgradeBlock>> blocks = new EnumMap<>(CreatePoweredUpgradeType.class);
+		for (CreatePoweredUpgradeType type : CreatePoweredUpgradeType.values()) {
+			blocks.put(type, BLOCKS.register(type.poweredPath(),
+					() -> new CreatePoweredEmberUpgradeBlock(type, BlockBehaviour.Properties.of()
+							.mapColor(MapColor.TERRACOTTA_ORANGE)
+							.strength(1.8F)
+							.requiresCorrectToolForDrops()
+							.noOcclusion())));
+		}
+		return Collections.unmodifiableMap(blocks);
+	}
+
+	private static Map<CreatePoweredUpgradeType, DeferredItem<CreatePoweredUpgradeItem>> registerCreatePoweredUpgradeItems() {
+		EnumMap<CreatePoweredUpgradeType, DeferredItem<CreatePoweredUpgradeItem>> items = new EnumMap<>(CreatePoweredUpgradeType.class);
+		for (Map.Entry<CreatePoweredUpgradeType, DeferredBlock<CreatePoweredEmberUpgradeBlock>> entry : CREATE_POWERED_UPGRADES.entrySet()) {
+			items.put(entry.getKey(), ITEMS.register(entry.getKey().poweredPath(),
+					() -> new CreatePoweredUpgradeItem(entry.getValue().get(), new Item.Properties())));
+		}
+		return Collections.unmodifiableMap(items);
+	}
+
+	private static Block[] getCreatePoweredUpgradeBlocks() {
+		return CREATE_POWERED_UPGRADES.values().stream()
+				.map(DeferredBlock::get)
+				.toArray(Block[]::new);
 	}
 }

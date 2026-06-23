@@ -2,7 +2,7 @@ package com.rekindled.embers.compat.createthrusters;
 
 import com.rekindled.embers.ConfigManager;
 import com.rekindled.embers.Embers;
-import com.rekindled.embers.RegistryManager;
+import com.rekindled.embers.compat.create.CreateCompat;
 import com.rekindled.embers.api.EmbersAPI;
 import com.rekindled.embers.item.AshenArmorItem;
 import com.rekindled.embers.item.MixedGogglesItem;
@@ -49,7 +49,7 @@ public final class ThrustersCompat {
 	}
 
 	private static void addCreativeTabItem(BuildCreativeModeTabContentsEvent event) {
-		if (event.getTabKey().equals(RegistryManager.EMBERS_TAB.getKey())) {
+		if (event.getTabKey().equals(CreateCompat.EMBERS_CREATE_TAB.getKey())) {
 			event.accept(PHYSICS_ASHEN_GOGGLES.get());
 		}
 	}
